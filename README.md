@@ -190,6 +190,7 @@ Micromamba environments are particularly useful where several software packages 
 | Environment    | Packages |
 | -------------- | ----------------------------------------- |
 | `base`         | micromamba's base environment |
+| `comfyui`      | ComfyUI and dependencies |
 | `system`       | `supervisord`, `openssh` `rclone` |
 | `python_[ver]` | `python` |
 
@@ -216,7 +217,7 @@ Data inside docker containers is ephemeral - You'll lose all of it when the cont
 
 You may opt to mount a data volume at `/workspace` - This is a directory that ai-dock images will look for to make downloaded data available outside of the container for persistence. 
 
-This is usually of importance where large files are downloaded at runtime or if you need a space to save your work. This is the ideal location to store any code you are working on.
+When the runtime scripts detect a mounted workspace, the `ComfyUI` directory will be moved there from its original location in `/opt`.
 
 You can define an alternative path for the workspace directory by passing the environment variable `WORKSPACE=/my/alternative/path/` and mounting your volume there. This feature will generally assist where cloud providers enforce their own mountpoint location for persistent storage.
 
@@ -246,6 +247,22 @@ ComfyUI will be updated to the latest version on container start. You can pin th
 You can set startup flags by using variable `COMFYUI_FLAGS`.
 
 To manage this service you can use `supervisorctl [start|stop|restart] comfyui`.
+
+>[!NOTE]  
+>_If you have enabled `CF_QUICK_TUNNELS` a secure `https://[random-auto-generated-sub-domain].trycloudflare.com` link will be created. You can find it at `/var/log/supervisor/quicktunnel-comfyui.log`_
+
+### Jupyter (with tag `jupyter` only)
+
+The jupyter server will launch a `lab` instance unless you specify `JUPYTER_MODE=notebook`.
+
+Jupyter server will listen on port `8888` unless you have specified an alternative with the `JUPYTER_PORT` environment variable.
+
+A python kernel will be installed coresponding with the python version of the image.
+
+Jupyter's official documentation is available at https://jupyter.org/
+
+>[!NOTE]  
+>_If you have enabled `CF_QUICK_TUNNELS` a secure `https://[random-auto-generated-sub-domain].trycloudflare.com` link will be created. You can find it at `/var/log/supervisor/quicktunnel-jupyter.log`_
 
 ### Cloudflared
 
