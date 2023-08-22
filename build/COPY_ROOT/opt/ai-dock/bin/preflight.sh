@@ -20,8 +20,8 @@ function preflight_move_to_workspace() {
 
 function preflight_copy_notebook() {
     if micromamba env list | grep 'jupyter' > /dev/null 2>&1;  then
-        if [[ ! -f "${WORKSPACE}comfyui-service.ipynb" ]]; then
-            cp /usr/local/share/ai-dock/comfy-service.ipynb ${WORKSPACE}
+        if [[ ! -f "${WORKSPACE}comfyui.ipynb" ]]; then
+            cp /usr/local/share/ai-dock/comfyui.ipynb ${WORKSPACE}
         fi
     fi
 }

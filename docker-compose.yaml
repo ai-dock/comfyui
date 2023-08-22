@@ -5,11 +5,11 @@ services:
     build:
       context: ./build
       args:
-        IMAGE_BASE: ${IMAGE_BASE}
+        IMAGE_BASE: ${IMAGE_BASE:-ghcr.io/ai-dock/jupyter-pytorch:latest-cuda}
       tags:
-        - "ghcr.io/ai-dock/comfyui:${IMAGE_TAG}"
+        - "ghcr.io/ai-dock/comfyui:${IMAGE_TAG:-latest-jupyter}"
         
-    image: ghcr.io/ai-dock/pytorch:${IMAGE_TAG}
+    image: ghcr.io/ai-dock/comfyui:${IMAGE_TAG:-latest-jupyter}
     
     security_opt:
       # For Rclone mount
@@ -39,7 +39,7 @@ services:
       - /etc/group:/etc/group:ro
       - ./config/rclone:/etc/rclone
       # Workspace
-      - ./workspace:${WORKSPACE}:rshared
+      - ./workspace:${WORKSPACE:-/workspace/}:rshared
       # Will echo to root-owned authorized_keys file;
       # Avoids changing local file owner
       - ./config/authorized_keys:/root/.ssh/authorized_keys_mount
@@ -47,18 +47,22 @@ services:
     
     ports:
         # SSH available on host machine port 2222 to avoid conflict. Change to suit
-        - ${SSH_PORT_HOST}:${SSH_PORT}
+        - ${SSH_PORT_HOST:-2222}:${SSH_PORT:-22}
         # ComfyUI web interface
-        - ${COMFYUI_PORT_HOST}:${COMFYUI_PORT}
+        - ${COMFYUI_PORT_HOST:-8188}:${COMFYUI_PORT:-8188}
+        # Jupyter server
+        - ${JUPYTER_PORT_HOST:-8888}:${JUPYTER_PORT:-8888}
         # Rclone webserver for interactive configuration
-        - ${RCLONE_PORT_HOST}:53682
+        - ${RCLONE_PORT_HOST:-53682}:53682
    
     environment:
         # Don't enclose values in quotes
-        - COMFYUI_FLAGS=${COMFYUI_FLAGS}
-        - COMFYUI_PORT=${COMFYUI_PORT}
+        - COMFYUI_FLAGS=${COMFYUI_FLAGS:-}
+        - COMFYUI_PORT=${COMFYUI_PORT:-8188}
+        - JUPYTER_TOKEN=${JUPYTER_TOKEN:-password}
         # Allows running true SSH alongside provider proxy SSH
-        - SSH_PORT=${SSH_PORT}
-        - WORKSPACE=${WORKSPACE}
-        - CF_TUNNEL_TOKEN=${CF_TUNNEL_TOKEN}
+        - SSH_PORT=${SSH_PORT:-22}
+        - WORKSPACE=${WORKSPACE:-/workspace}
+        - CF_TUNNEL_TOKEN=${CF_TUNNEL_TOKEN:-}
+        - CF_QUICK_TUNNELS=${CF_QUICK_TUNNELS:-true}
         #- PROVISIONING_SCRIPT=https://raw.githubusercontent.com/ai-dock/base-image/main/demo/provisioning.sh
