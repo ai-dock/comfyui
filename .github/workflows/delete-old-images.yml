@@ -1,0 +1,110 @@
+name: Delete Old Packages
+
+env:
+  PER_PAGE: 100
+
+on:
+  workflow_dispatch:
+      inputs:
+          age:
+            type: choice
+            required: true
+            description: Delete older than
+            options: 
+            - 1 Hour
+            - 12 Hours
+            - 1 Day
+            - 1 Week
+            - 2 Weeks
+            - 1 Month
+            - 6 Months
+            - 1 Year
+            - 2 Years
+            - 3 Years
+            - 4 Years
+            - 5 Years
+            - All Packages
+
+jobs:
+  delete-old-packages:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        run: |
+          echo "PACKAGE_NAME=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
+          echo "OWNER=orgs/${GITHUB_REPOSITORY_OWNER,,}" >> ${GITHUB_ENV}
+      -
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.DELETE_PACKAGES_TOKEN }}
+          script: |
+            const delete_age = (function() {
+                switch ("${{ github.event.inputs.age }}") {
+                    case "All Packages":
+                        return 0;
+                    case "1 Hour":
+                        return 60;
+                    case "12 Hours":
+                        return 720;
+                    case "1 Day":
+                        return 1440;
+                    case "1 Week":
+                        return 10080;
+                    case "2 Weeks":
+                        return 20160;
+                    case "1 Month":
+                        return 43800;
+                    case "6 Months":
+                        return 262800;
+                    case "1 Year":
+                        return 525600;
+                    case "2 Years":
+                        return 525600 * 2;
+                    case "3 Years":
+                        return 525600 * 3;
+                    case "4 Years":
+                        return 525600 * 4;
+                    case "5 Years":
+                        return 525600 * 5;
+                    default:
+                        return 157680000;
+                }
+            })();
+            
+            const now = new Date();
+            const epoch_minutes = Math.round(now.getTime() / 1000 / 60);
+            
+            const response = await github.request("GET /${{ env.OWNER }}/packages/container/${{ github.event.repository.name  }}/versions",
+              { per_page: ${{ env.PER_PAGE }}
+            });
+
+            const pages = (function() { 
+                if (typeof response.headers.link !== 'undefined') {
+                return response.headers.link.split(">").slice(-2)[0].split('=').slice(-1)[0]
+                }
+                return 1;
+            })();
+
+            console.log("Total pages: " + pages);
+            
+            for (let page = pages; page >= 1; page--) {
+              console.log("Processing page " + page)
+              
+              const response = await github.request("GET /${{ env.OWNER }}/packages/container/${{ github.event.repository.name  }}/versions",
+              { 
+                  per_page: ${{ env.PER_PAGE }},
+                  page: page
+              });
+              
+              console.log("Deleting packages updated more than " + delete_age + " minutes ago...")
+              for (version of response.data) {
+                let updated_at = new Date(version.updated_at)
+                let minutes_old = epoch_minutes - Math.round(updated_at.getTime() / 1000 / 60);
+                console.log("Package is " + minutes_old + " minutes old")
+                if (minutes_old > delete_age) {
+                    console.log("delete " + version.id)
+                    const deleteResponse = await github.request("DELETE /${{ env.OWNER }}/packages/container/${{ github.event.repository.name }}/versions/" + version.id, { });
+                        console.log("status " + deleteResponse.status)
+                }
+              }
+            }

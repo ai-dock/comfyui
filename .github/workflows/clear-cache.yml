@@ -1,0 +1,55 @@
+# https://stackoverflow.com/a/73556714
+name: Clear Cache
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  clear-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clear cache
+        uses: actions/github-script@v6
+        with:
+          script: |
+            console.log("About to clear")
+            const response = await github.rest.actions.getActionsCacheList({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                page: 1,
+                per_page: 100
+            });
+            
+            const pages = (function() { 
+                if (typeof response.headers.link !== 'undefined') {
+                    return response.headers.link.split(">").slice(-2)[0].split('=').slice(-1)[0]
+                }
+                return 1;
+            })();
+            
+            console.log("Total pages: " + pages);
+            
+            for (let page = pages; page >= 1; page--) {
+                console.log("Processing page " + page)
+              
+                const response = await github.rest.actions.getActionsCacheList({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    page: page,
+                    per_page: 100
+                });
+                
+                for (const cache of response.data.actions_caches) {
+                    console.log(cache)
+                    github.rest.actions.deleteActionsCacheById({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        cache_id: cache.id,
+                    })
+                }
+            }
+            
+            console.log("Clear completed")

@@ -1,0 +1,56 @@
+name: Delete Untagged Packages
+
+env:
+  PER_PAGE: 100
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Docker Build"]
+    types:
+      - completed
+
+jobs:
+  delete-untagged:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        run: |
+          echo "PACKAGE_NAME=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
+          echo "OWNER=orgs/${GITHUB_REPOSITORY_OWNER,,}" >> ${GITHUB_ENV}
+      -
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.DELETE_PACKAGES_TOKEN }}
+          script: |
+            const response = await github.request("GET /${{ env.OWNER }}/packages/container/${{ github.event.repository.name  }}/versions",
+              { per_page: ${{ env.PER_PAGE }}
+            });
+
+            const pages = (function() { 
+                if (typeof response.headers.link !== 'undefined') {
+                return response.headers.link.split(">").slice(-2)[0].split('=').slice(-1)[0]
+                }
+                return 1;
+            })();
+
+            console.log("Total pages: " + pages);
+            
+            for (let page = pages; page >= 1; page--) {
+              console.log("Processing page " + page)
+              
+              const response = await github.request("GET /${{ env.OWNER }}/packages/container/${{ github.event.repository.name  }}/versions",
+              { 
+                  per_page: ${{ env.PER_PAGE }},
+                  page: page
+              });
+              
+              for (version of response.data) {
+                if (version.metadata.container.tags.length == 0) {
+                    console.log("delete " + version.id)
+                    const deleteResponse = await github.request("DELETE /${{ env.OWNER }}/packages/container/${{ github.event.repository.name }}/versions/" + version.id, { });
+                        console.log("status " + deleteResponse.status)
+                }
+              }
+            }
+            
