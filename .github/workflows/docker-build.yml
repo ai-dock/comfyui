@@ -152,6 +152,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        base:
+          - "pytorch"
+          - "jupyter-pytorch"
         python:
           - "3.10"
         pytorch:
