@@ -4,6 +4,13 @@
 
 Run ComfyUI in a docker container locally or in the cloud.
 
+>[!NOTE]  
+>These images do not bundle models or third-party configuragions. You should use a [provisioning script](#provisioning-script) to configure your instance. You can find examples in `config/provisioning`.
+
+## Quick Start
+
+Simply declare your [environment variables](#environment-variables) and launch a container with `docker compose` or choose a pre-configured [cloud template](#pre-configured-templates).
+
 ## About ComfyUI
 
 ComfyUI is a powerful and modular stable diffusion GUI and backend with a user-friendly interface that empowers users to effortlessly design and execute intricate Stable Diffusion pipelines. This innovative system employs a visual approach with nodes, flowcharts, and graphs, eliminating the need for manual coding.
