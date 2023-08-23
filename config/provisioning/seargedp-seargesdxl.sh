@@ -2,6 +2,8 @@
 
 # This file will be sourced in init.sh
 
+# https://raw.githubusercontent.com/ai-dock/comfyui/main/config/provisioning/seargedp-seargesdxl.sh
+
 # Download SeargeSDXL and the required model files if they do not already exist
 
 searge_git="https://github.com/SeargeDP/SeargeSDXL"
