@@ -1,6 +1,9 @@
 #!/bin/false
 
 # This file will be sourced in init.sh
+
+# Download SeargeSDXL and the required model files if they do not already exist
+
 searge_git="https://github.com/SeargeDP/SeargeSDXL"
 searge_dir="/opt/ComfyUI/custom_nodes/SeargeSDXL"
 

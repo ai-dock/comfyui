@@ -5,7 +5,7 @@
 Run ComfyUI in a docker container locally or in the cloud.
 
 >[!NOTE]  
->These images do not bundle models or third-party configuragions. You should use a [provisioning script](#provisioning-script) to configure your instance. You can find examples in `config/provisioning`.
+>These images do not bundle models or third-party configurations. You should use a [provisioning script](#provisioning-script) to automatically configure your container. You can find examples in `config/provisioning`.
 
 ## Quick Start
 
@@ -179,7 +179,7 @@ You can use the environment variable `PROVISIONING_SCRIPT` to specify the URL of
 If you are running locally you may instead opt to mount a script at `/opt/ai-dock/bin/provisioning.sh`.
 
 >[!NOTE]  
->`supervisord` will not spawn any processes until the provisioning script has completed.
+>`supervisord` will not spawn any processes until the provisioning script has completed. If the script needs to download models or datasets it may take some time for your container to become interactive.
 
 >[!WARNING]  
 >Only use scripts that you trust and which cannot be changed without your consent.
