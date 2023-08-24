@@ -224,7 +224,7 @@ Data inside docker containers is ephemeral - You'll lose all of it when the cont
 
 You may opt to mount a data volume at `/workspace` - This is a directory that ai-dock images will look for to make downloaded data available outside of the container for persistence. 
 
-When the runtime scripts detect a mounted workspace, the `ComfyUI` directory will be moved there from its original location in `/opt`.
+When the runtime scripts detect a mounted workspace, the `ComfyUI` directory will be moved there from its original location in `/opt`. If the workspace is not mounted then a symlink will be created for convenience.
 
 You can define an alternative path for the workspace directory by passing the environment variable `WORKSPACE=/my/alternative/path/` and mounting your volume there. This feature will generally assist where cloud providers enforce their own mountpoint location for persistent storage.
 
@@ -380,7 +380,7 @@ Some ports need to be exposed for the services to run or for certain features of
 - Select `Advanced options`
 - In Container Name enter `ghcr.io/ai-dock/comfyui:latest-jupyter`
 - In Registry Username enter `x` (Paperspace bug)
-- In Command enter `init.sh WORKSPACE=/notebooks CF_QUICK_TUNNELS=true`
+- In Command enter `init.sh WORKSPACE=/notebooks PROVISIONING_SCRIPT="https://raw.githubusercontent.com/ai-dock/comfyui/main/config/provisioning/get_model_sd-1.5.sh" CF_QUICK_TUNNELS=true`
 
 You can use the web UI to do further configuration, or you can supply further environment variables as detailed above.
 

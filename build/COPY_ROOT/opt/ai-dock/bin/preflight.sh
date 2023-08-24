@@ -9,12 +9,13 @@ function preflight_main() {
 }
 
 function preflight_move_to_workspace() {
-    if [[ $WORKSPACE_MOUNTED = "true" ]]; then
-        if [[ ! -d ${WORKSPACE}ComfyUI ]]; then
+    if [[ ! -e ${WORKSPACE}ComfyUI && -d /opt/ComfyUI ]]; then
+        if [[ $WORKSPACE_MOUNTED = "true" ]]; then
             mv /opt/ComfyUI ${WORKSPACE}
-        fi
-            rm -rf /opt/ComfyUI
             ln -s ${WORKSPACE}ComfyUI /opt/ComfyUI
+        else
+             ln -s /opt/ComfyUI ${WORKSPACE}ComfyUI
+         fi
     fi
 }
 
