@@ -57,6 +57,7 @@ services:
    
     environment:
         # Don't enclose values in quotes
+        - COMFYUI_BRANCH=${COMFYUI_BRANCH:-master}
         - COMFYUI_FLAGS=${COMFYUI_FLAGS:-}
         - COMFYUI_PORT=${COMFYUI_PORT:-8188}
         - JUPYTER_TOKEN=${JUPYTER_TOKEN:-password}

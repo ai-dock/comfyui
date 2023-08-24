@@ -9,13 +9,14 @@ function preflight_main() {
 }
 
 function preflight_move_to_workspace() {
-    if [[ ! -e ${WORKSPACE}ComfyUI && -d /opt/ComfyUI ]]; then
-        if [[ $WORKSPACE_MOUNTED = "true" ]]; then
-            mv /opt/ComfyUI ${WORKSPACE}
-            ln -s ${WORKSPACE}ComfyUI /opt/ComfyUI
-        else
-             ln -s /opt/ComfyUI ${WORKSPACE}ComfyUI
-         fi
+    if [[ ! -e ${WORKSPACE}ComfyUI && $WORKSPACE_MOUNTED = "true" ]]; then
+        mv /opt/ComfyUI ${WORKSPACE}
+        ln -s ${WORKSPACE}ComfyUI /opt/ComfyUI
+    elif [[ -d ${WORKSPACE}ComfyUI && $WORKSPACE_MOUNTED = "true" ]]; then
+        rm -rf /opt/ComfyUI
+        ln -s ${WORKSPACE}ComfyUI /opt/ComfyUI
+    elif [[ $WORKSPACE_MOUNTED = "false" && -d /opt/ComfyUI ]]; then
+        ln -s /opt/ComfyUI ${WORKSPACE}ComfyUI
     fi
 }
 

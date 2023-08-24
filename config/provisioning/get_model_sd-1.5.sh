@@ -15,7 +15,7 @@ upscale_dir=${models_dir}/upscale_models
 model_file=${checkpoints_dir}/v1-5-pruned-emaonly.ckpt
 model_url=https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.ckpt
 
-if [[ ! -f ${model_file} ]]; then
+if [[ ! -e ${model_file} ]]; then
     printf "Downloading Stable Diffusion 1.5...\n"
     wget -O ${model_file} ${model_url}
 fi
