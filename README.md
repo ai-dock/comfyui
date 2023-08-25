@@ -2,7 +2,7 @@
 
 # ComfyUI Docker Image
 
-Run ComfyUI in a docker container locally or in the cloud.
+Run [ComfyUI](https://github.com/comfyanonymous/ComfyUI) in a docker container locally or in the cloud.
 
 >[!NOTE]  
 >These images do not bundle models or third-party configurations. You should use a [provisioning script](#provisioning-script) to automatically configure your container. You can find examples in `config/provisioning`.
@@ -380,12 +380,12 @@ Some ports need to be exposed for the services to run or for certain features of
 - Select `Advanced options`
 - In Container Name enter `ghcr.io/ai-dock/comfyui:latest-jupyter`
 - In Registry Username enter `x` (Paperspace bug)
-- In Command enter `init.sh WORKSPACE=/notebooks PROVISIONING_SCRIPT="https://raw.githubusercontent.com/ai-dock/comfyui/main/config/provisioning/get_model_sd-1.5.sh" CF_QUICK_TUNNELS=true`
+- In Command enter `init.sh WORKSPACE=/notebooks PROVISIONING_SCRIPT="https://raw.githubusercontent.com/ai-dock/comfyui/main/config/provisioning/get-models-sd-official.sh" CF_QUICK_TUNNELS=true`
 
 You can use the web UI to do further configuration, or you can supply further environment variables as detailed above.
 
 >[!NOTE]  
->The use of `CF_QUICK_TUNNELS` enables us to reach the web UI with a link supplied by Cloudflare. You can find the link in `/var/log/supervisor/quicktunnel-comfy.log`
+>The use of `CF_QUICK_TUNNELS` enables us to reach the web UI with a link supplied by Cloudflare. You can find the link in `/var/log/supervisor/quicktunnel-comfyui.log`
 
 >[!WARNING]  
 >Do not attempt to use tunnels to circumvent Paperspace restrictions (eg. SSH & private networking) - You will lose your account.
@@ -393,7 +393,7 @@ You can use the web UI to do further configuration, or you can supply further en
 ---
 
 >[!NOTE]  
->These templates are configured to use the `:latest` tag but you are free to change to any of the available Pytorch CUDA tags listed [here](https://github.com/ai-dock/pytorch/pkgs/container/pytorch)
+>These templates are configured to use the `:latest` tag but you are free to change to any of the available Pytorch CUDA tags listed [here](https://github.com/ai-dock/comfyui/pkgs/container/comfyui)
 
 ## Compatible VM Providers
 
