@@ -2,8 +2,11 @@
 
 # This file will be sourced in init.sh
 
-# https://raw.githubusercontent.com/ai-dock/comfyui/main/config/provisioning/get_model_sd-1.5.sh
-
+# https://raw.githubusercontent.com/ai-dock/comfyui/main/config/provisioning/get-models-sd-official.sh
+printf "\n##############################################\n#                                            #\n#          Provisioning container            #\n#                                            #\n#         This will take some time           #\n#                                            #\n# Your container will be ready on completion #\n#                                            #\n##############################################\n\n"
+function download() {
+    wget -q --show-progress -e dotbytes="${3:-4M}" -O "$2" "$1"
+}
 # Download Stable Diffusion official models
 
 models_dir=/opt/ComfyUI/models
@@ -18,7 +21,7 @@ model_url=https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-
 
 if [[ ! -e ${model_file} ]]; then
     printf "Downloading Stable Diffusion 1.5...\n"
-    wget -O ${model_file} ${model_url}
+    download ${model_url} ${model_file}
 fi
 
 # v2-1_768-ema-pruned
@@ -27,7 +30,7 @@ model_url=https://huggingface.co/stabilityai/stable-diffusion-2-1/resolve/main/v
 
 if [[ ! -e ${model_file} ]]; then
     printf "Downloading Stable Diffusion 2.1...\n"
-    wget -O ${model_file} ${model_url}
+    download ${model_url} ${model_file}
 fi
 
 # sd_xl_base_1
@@ -36,7 +39,7 @@ model_url=https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolv
 
 if [[ ! -e ${model_file} ]]; then
     printf "Downloading Stable Diffusion XL base...\n"
-    wget -O ${model_file} ${model_url}
+    download ${model_url} ${model_file}
 fi
 
 # sd_xl_refiner_1
@@ -45,5 +48,5 @@ model_url=https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/res
 
 if [[ ! -e ${model_file} ]]; then
     printf "Downloading Stable Diffusion XL refiner...\n"
-    wget -O ${model_file} ${model_url}
+    download ${model_url} ${model_file}
 fi

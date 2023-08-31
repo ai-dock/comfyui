@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Must exit and fail to build if any command fails
-set -e
+set -eo pipefail
 
-comfy_git="https://github.com/comfyanonymous/ComfyUI"
+comfyui_git="https://github.com/comfyanonymous/ComfyUI"
 
 main() {
     create_env
@@ -13,8 +13,7 @@ main() {
 
 create_env() {
     apt-get update
-    $APT_INSTALL libgl1 \
-                 uuid-runtime
+    $APT_INSTALL libgl1
     # A new pytorch env costs ~ 300Mb
     exported_env=/tmp/${MAMBA_DEFAULT_ENV}.yaml
     micromamba env export -n ${MAMBA_DEFAULT_ENV} > "${exported_env}"
@@ -47,7 +46,7 @@ install_jupyter_kernels() {
 
 clone_comfyui() {
     cd /opt
-    git clone ${comfy_git}
+    git clone ${comfyui_git}
 }
 
 main "$@"; exit

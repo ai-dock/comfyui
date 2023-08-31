@@ -17,9 +17,10 @@ COPY ./COPY_ROOT/ /
 # Don't put anything heavy in here - We can use multi-stage building above if necessary.
 
 ARG IMAGE_BASE
-RUN bash -c /opt/ai-dock/bin/build/layer0/init.sh
+RUN /opt/ai-dock/bin/build/layer0/init.sh
 
 ENV MAMBA_DEFAULT_ENV=comfyui
+ENV MAMBA_DEFAULT_RUN="micromamba run -n $MAMBA_DEFAULT_ENV"
 
 # Keep init.sh as-is and place additional logic in /opt/ai-dock/bin/preflight.sh
 CMD ["init.sh"]

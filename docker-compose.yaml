@@ -61,9 +61,10 @@ services:
         - COMFYUI_FLAGS=${COMFYUI_FLAGS:-}
         - COMFYUI_PORT=${COMFYUI_PORT:-8188}
         - JUPYTER_TOKEN=${JUPYTER_TOKEN:-password}
+        - JUPYTER_MODE=${JUPYTER_MODE:-lab}
         # Allows running true SSH alongside provider proxy SSH
         - SSH_PORT=${SSH_PORT:-22}
         - WORKSPACE=${WORKSPACE:-/workspace}
         - CF_TUNNEL_TOKEN=${CF_TUNNEL_TOKEN:-}
         - CF_QUICK_TUNNELS=${CF_QUICK_TUNNELS:-true}
-        # - PROVISIONING_SCRIPT=${PROVISIONING_SCRIPT:-}
+        #- PROVISIONING_SCRIPT=${PROVISIONING_SCRIPT:-}
