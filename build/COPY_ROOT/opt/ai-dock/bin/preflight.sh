@@ -1,5 +1,5 @@
 #!/bin/false
-set +x
+
 # This file will be sourced in init.sh
 
 function preflight_main() {
