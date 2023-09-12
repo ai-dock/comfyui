@@ -9,6 +9,7 @@ LABEL org.opencontainers.image.description "ComfyUI Stable Diffusion backend and
 
 LABEL maintainer="Rob Ballantyne <rob@dynamedia.uk>"
 
+ENV IMAGE_SLUG="comfyui"
 
 # Copy early so we can use scripts in the build - Changes to these files will invalidate the cache and cause a rebuild.
 COPY ./COPY_ROOT/ /

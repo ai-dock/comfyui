@@ -48,6 +48,10 @@ services:
     ports:
         # SSH available on host machine port 2222 to avoid conflict. Change to suit
         - ${SSH_PORT_HOST:-2222}:${SSH_PORT:-22}
+        # redirect to Cloudflare quick tunnel
+        - ${REDIRECTOR_PORT_HOST}:1111
+        # Websocket log viewer
+        - ${LOG_VIEWER_PORT_HOST}:1122
         # ComfyUI web interface
         - ${COMFYUI_PORT_HOST:-8188}:${COMFYUI_PORT:-8188}
         # Jupyter server
