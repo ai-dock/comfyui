@@ -64,11 +64,14 @@ services:
         - COMFYUI_BRANCH=${COMFYUI_BRANCH:-master}
         - COMFYUI_FLAGS=${COMFYUI_FLAGS:-}
         - COMFYUI_PORT=${COMFYUI_PORT:-8188}
-        - JUPYTER_TOKEN=${JUPYTER_TOKEN:-password}
         - JUPYTER_MODE=${JUPYTER_MODE:-lab}
         # Allows running true SSH alongside provider proxy SSH
         - SSH_PORT=${SSH_PORT:-22}
         - WORKSPACE=${WORKSPACE:-/workspace}
+        - WORKSPACE_SYNC=${WORKSPACE_SYNC}
         - CF_TUNNEL_TOKEN=${CF_TUNNEL_TOKEN:-}
         - CF_QUICK_TUNNELS=${CF_QUICK_TUNNELS:-true}
+        - WEB_ENABLE_AUTH=${WEB_ENABLE_AUTH}
+        - WEB_USER=${WEB_USER}
+        - WEB_PASSWORD=${WEB_PASSWORD}
         #- PROVISIONING_SCRIPT=${PROVISIONING_SCRIPT:-}
