@@ -43,7 +43,7 @@ services:
       # Will echo to root-owned authorized_keys file;
       # Avoids changing local file owner
       - ./config/authorized_keys:/root/.ssh/authorized_keys_mount
-      - ./config/provisioning/get-models-sd-official.sh:/opt/ai-dock/bin/provisioning.sh
+      - ./config/provisioning/default.sh:/opt/ai-dock/bin/provisioning.sh
     
     ports:
         # SSH available on host machine port 2222 to avoid conflict. Change to suit
