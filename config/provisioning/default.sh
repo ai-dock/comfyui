@@ -2,7 +2,7 @@
 
 # This file will be sourced in init.sh
 
-# https://raw.githubusercontent.com/ai-dock/comfyui/main/config/provisioning/get-models-sd-official.sh
+# https://raw.githubusercontent.com/ai-dock/comfyui/main/config/provisioning/default.sh
 printf "\n##############################################\n#                                            #\n#          Provisioning container            #\n#                                            #\n#         This will take some time           #\n#                                            #\n# Your container will be ready on completion #\n#                                            #\n##############################################\n\n"
 function download() {
     wget -q --show-progress -e dotbytes="${3:-4M}" -O "$2" "$1"
