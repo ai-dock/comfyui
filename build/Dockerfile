@@ -20,6 +20,7 @@ COPY ./COPY_ROOT/ /
 ARG IMAGE_BASE
 RUN /opt/ai-dock/bin/build/layer0/init.sh
 
+ENV OPT_SYNC=ComfyUI:$OPT_SYNC
 ENV MAMBA_DEFAULT_ENV=comfyui
 ENV MAMBA_DEFAULT_RUN="micromamba run -n $MAMBA_DEFAULT_ENV"
 

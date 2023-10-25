@@ -7,6 +7,11 @@ function preflight_main() {
     preflight_update_comfyui
 }
 
+function preflight_serverless() {
+  printf "Refusing to update ComfyUI in serverless mode\n \
+    Nothing to do. \n"
+}
+
 function preflight_copy_notebook() {
     if micromamba env list | grep 'jupyter' > /dev/null 2>&1;  then
         if [[ ! -f "${WORKSPACE}comfyui.ipynb" ]]; then
@@ -19,4 +24,8 @@ function preflight_update_comfyui() {
     /opt/ai-dock/bin/update-comfyui.sh
 }
 
-preflight_main "$@"
+if [[ ${SERVERLESS,,} != "true" ]]; then
+    preflight_main "$@"
+else
+   preflight_serverless "$@"
+fi

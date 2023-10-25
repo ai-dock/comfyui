@@ -39,19 +39,19 @@ services:
       - /etc/group:/etc/group:ro
       - ./config/rclone:/etc/rclone
       # Workspace
-      - ./workspace:${WORKSPACE:-/workspace/}:rshared
+      #- ./workspace:${WORKSPACE:-/workspace/}:rshared
       # Will echo to root-owned authorized_keys file;
       # Avoids changing local file owner
       - ./config/authorized_keys:/root/.ssh/authorized_keys_mount
-      - ./config/provisioning/default.sh:/opt/ai-dock/bin/provisioning.sh
+      - ./config/provisioning/animated.sh:/opt/ai-dock/bin/provisioning.sh
     
     ports:
         # SSH available on host machine port 2222 to avoid conflict. Change to suit
         - ${SSH_PORT_HOST:-2222}:${SSH_PORT:-22}
         # redirect to Cloudflare quick tunnel
-        - ${REDIRECTOR_PORT_HOST}:1111
+        - ${REDIRECTOR_PORT_HOST:-1111}:1111
         # Websocket log viewer
-        - ${LOG_VIEWER_PORT_HOST}:1122
+        - ${LOG_VIEWER_PORT_HOST:-1122}:1122
         # ComfyUI web interface
         - ${COMFYUI_PORT_HOST:-8188}:${COMFYUI_PORT:-8188}
         # Jupyter server
@@ -68,10 +68,11 @@ services:
         # Allows running true SSH alongside provider proxy SSH
         - SSH_PORT=${SSH_PORT:-22}
         - WORKSPACE=${WORKSPACE:-/workspace}
-        - WORKSPACE_SYNC=${WORKSPACE_SYNC}
+        - WORKSPACE_SYNC=${WORKSPACE_SYNC:-true}
         - CF_TUNNEL_TOKEN=${CF_TUNNEL_TOKEN:-}
         - CF_QUICK_TUNNELS=${CF_QUICK_TUNNELS:-true}
-        - WEB_ENABLE_AUTH=${WEB_ENABLE_AUTH}
-        - WEB_USER=${WEB_USER}
-        - WEB_PASSWORD=${WEB_PASSWORD}
+        - WEB_ENABLE_AUTH=${WEB_ENABLE_AUTH:-true}
+        - WEB_USER=${WEB_USER:-user}
+        - WEB_PASSWORD=${WEB_PASSWORD:-password}
+        - SERVERLESS=${SERVERLESS:-false}
         #- PROVISIONING_SCRIPT=${PROVISIONING_SCRIPT:-}
