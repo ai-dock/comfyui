@@ -1,0 +1,7 @@
+{
+    "input": {
+        "handler": "Text2Image",
+        "include_text": "A scuba diver exploring an ancient shipwreck",
+        "exclude_text": "Modern shipwreck, snorkel"
+        }
+}
