@@ -1,7 +1,9 @@
 {
     "input": {
         "handler": "Text2Image",
+        "aws_bucket_name": "ai-dock",
+        "ckpt_name": "v1-5-pruned-emaonly.ckpt",
         "include_text": "A scuba diver exploring an ancient shipwreck",
-        "exclude_text": "Modern shipwreck, snorkel"
+        "exclude_text": "https://cdn.pixabay.com/photo/2014/06/03/19/38/board-361516_1280.jpg"
         }
 }

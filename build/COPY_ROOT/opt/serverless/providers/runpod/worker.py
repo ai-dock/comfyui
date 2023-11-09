@@ -11,6 +11,7 @@ def get_handler(payload):
         handler_class = locate(f"handlers.{m_name}.{c_name}")
         handler = handler_class(payload)
     except:
+        raise
         raise IndexError(f"Handler ({c_name}) not found")
         
     return handler
@@ -19,6 +20,7 @@ def get_handler(payload):
 Handler to be specified in input.handler
 '''
 def worker(event):
+    result = {}
     try:
         payload = event["input"]
         payload["request_id"] = event["id"]
