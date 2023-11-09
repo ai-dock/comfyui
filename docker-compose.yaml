@@ -39,7 +39,7 @@ services:
       - /etc/group:/etc/group:ro
       - ./config/rclone:/etc/rclone
       # Workspace
-      #- ./workspace:${WORKSPACE:-/workspace/}:rshared
+      - ./workspace:${WORKSPACE:-/workspace/}:rshared
       # Will echo to root-owned authorized_keys file;
       # Avoids changing local file owner
       - ./config/authorized_keys:/root/.ssh/authorized_keys_mount
@@ -76,3 +76,4 @@ services:
         - WEB_PASSWORD=${WEB_PASSWORD:-password}
         - SERVERLESS=${SERVERLESS:-false}
         #- PROVISIONING_SCRIPT=${PROVISIONING_SCRIPT:-}
+        - OPT_SYNC=ComfyUI:serverless

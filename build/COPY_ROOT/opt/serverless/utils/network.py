@@ -1,0 +1,36 @@
+from urllib.parse import urlparse
+import requests
+import os
+import uuid
+
+class Network:
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def is_url(value):
+        try:
+            return bool(urlparse(value)[0])
+        except:
+            return False
+    
+    # todo - threads 
+    @staticmethod
+    def download_file(url, target_dir, request_id):
+        try:
+            os.makedirs(target_dir, exist_ok=True)
+            response = requests.get(url)
+            if "content-disposition" in response.headers:
+                content_disposition = response.headers["content-disposition"]
+                filename = content_disposition.split("filename=")[1]
+            else:
+                filename = url.split("/")[-1]
+            
+            filepath = f"{target_dir}/{request_id}-{uuid.uuid4()}-{filename}"
+            with open(filepath, mode="wb") as file:
+                file.write(response.content)
+        except:
+            raise
+
+        print(f"Downloaded {file} to {target_dir}")
+        return filepath
