@@ -1,4 +1,5 @@
 workspace
+build/COPY_ROOT/model_repository/
 config/authorized_keys
 config/rclone
 tpdocs/
