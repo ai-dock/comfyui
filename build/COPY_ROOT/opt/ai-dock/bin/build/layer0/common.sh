@@ -13,13 +13,16 @@ main() {
 
 create_env() {
     apt-get update
-    $APT_INSTALL libgl1
+    $APT_INSTALL libgl1 \
+        libgoogle-perftools4
+
+    ln -sf $(ldconfig -p | grep -Po "libtcmalloc.so.\d" | head -n 1) \
+        /lib/x86_64-linux-gnu/libtcmalloc.so
+
     # A new pytorch env costs ~ 300Mb
     exported_env=/tmp/${MAMBA_DEFAULT_ENV}.yaml
     micromamba env export -n ${MAMBA_DEFAULT_ENV} > "${exported_env}"
     $MAMBA_CREATE -n comfyui --file "${exported_env}"
-    $MAMBA_INSTALL -n comfyui -c conda-forge -y \
-        gperftools
 }
 
 install_jupyter_kernels() {

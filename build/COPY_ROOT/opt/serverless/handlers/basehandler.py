@@ -132,11 +132,11 @@ class BaseHandler:
         
         self.job_time_completed = datetime.datetime.now()
         self.result["timings"] = {
-            "job_time_received": self.job_time_received,
-            "job_time_queued": self.job_time_queued,
-            "job_time_processed": self.job_time_processed,
-            "job_time_completed": self.job_time_completed,
-            "job_time_total": (self.job_time_completed - self.job_time_received.seconds
+            "job_time_received": self.job_time_received.ctime(),
+            "job_time_queued": self.job_time_queued.ctime(),
+            "job_time_processed": self.job_time_processed.ctime(),
+            "job_time_completed": self.job_time_completed.ctime(),
+            "job_time_total": (self.job_time_completed - self.job_time_received).seconds
         }
 
         return self.result

@@ -36,13 +36,13 @@ function start() {
         PLATFORM_FLAGS="--cpu"
     fi
     
-    BASE_FLAGS="--listen 127.0.0.1 --port ${LISTEN_PORT} --disable-auto-launch"
+    BASE_FLAGS="--listen 127.0.0.1 --disable-auto-launch"
     
     # Delay launch until micromamba is ready
     if [[ -f /run/workspace_sync || -f /run/container_config ]]; then
         if [[ ${SERVERLESS,,} != "true" ]]; then
             printf "Waiting for workspace sync...\n"
-            kill -9 $(lsof -t -i:$LISTEN_PORT) > /dev/null 2>&1 &
+            kill $(lsof -t -i:$LISTEN_PORT) > /dev/null 2>&1 &
             wait -n
             /usr/bin/python3 /opt/ai-dock/fastapi/logviewer/main.py \
                 -p $LISTEN_PORT \
@@ -60,19 +60,22 @@ function start() {
         else
             printf "Waiting for workspace symlinks and pre-flight checks...\n"
             while [[ -f /run/workspace_sync || -f /run/container_config ]]; do
-                sleep 0.1s
+                sleep 1
             done
         fi
     fi
     
     printf "Starting %s...\n" ${SERVICE_NAME}
-    cd /opt/ComfyUI
-    kill -9 $(lsof -t -i:$LISTEN_PORT) > /dev/null 2>&1 &
+    
+    kill $(lsof -t -i:$LISTEN_PORT) > /dev/null 2>&1 &
     wait -n
-    micromamba run -n comfyui python main.py \
-        ${PLATFORM_FLAGS} \
-        ${BASE_FLAGS} \
-        ${COMFYUI_FLAGS}
+
+    FLAGS_COMBINED="${PLATFORM_FLAGS} ${BASE_FLAGS} $(cat /etc/comfyui_flags.conf)"
+    printf "Starting %s...\n" "${SERVICE_NAME}"
+
+    cd /opt/ComfyUI && \
+    micromamba run -n comfyui -e LD_PRELOAD=libtcmalloc.so python main.py \
+        ${FLAGS_COMBINED} --port ${LISTEN_PORT}
 }
 
 start 2>&1

@@ -5,11 +5,13 @@
 function preflight_main() {
     preflight_copy_notebook
     preflight_update_comfyui
+    printf "%s" "${COMFYUI_FLAGS}" > /etc/comfyui_flags.conf
 }
 
 function preflight_serverless() {
-  printf "Refusing to update ComfyUI in serverless mode\n \
-    Nothing to do. \n"
+  printf "Refusing to update ComfyUI in serverless mode\n"
+  printf "%s" "${COMFYUI_FLAGS}" > /etc/comfyui_flags.conf
+
 }
 
 function preflight_copy_notebook() {
@@ -21,7 +23,11 @@ function preflight_copy_notebook() {
 }
 
 function preflight_update_comfyui() {
-    /opt/ai-dock/bin/update-comfyui.sh
+    if [[ ${AUTO_UPDATE,,} != "false" ]]; then
+        /opt/ai-dock/bin/update-comfyui.sh
+    else
+        printf "Skipping auto update (AUTO_UPDATE=false)"
+    fi
 }
 
 if [[ ${SERVERLESS,,} != "true" ]]; then
