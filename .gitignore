@@ -1,5 +1,5 @@
 workspace
-build/COPY_ROOT/opt/model_repository/
+build/COPY_ROOT_EXTRA/opt/model_repository/
 config/authorized_keys
 config/rclone
 tpdocs/
