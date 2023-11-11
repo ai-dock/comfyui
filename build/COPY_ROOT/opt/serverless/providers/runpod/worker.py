@@ -1,7 +1,6 @@
 import sys
 sys.path.append('/opt/serverless')
 from pydoc import locate
-import handlers
 import runpod
 
 def get_handler(payload):
@@ -11,7 +10,6 @@ def get_handler(payload):
         handler_class = locate(f"handlers.{m_name}.{c_name}")
         handler = handler_class(payload)
     except:
-        raise
         raise IndexError(f"Handler ({c_name}) not found")
         
     return handler

@@ -10,9 +10,9 @@ To modify values we have to be confident in the json structure.
 One exception - RawWorkflow will send payload['workflow_json'] to the ComfyUI API - TODO
 """
 
-class Text2Image(BaseHandler):
+class Image2Image(BaseHandler):
     
-    WORKFLOW_JSON = "/opt/serverless/workflows/text2image.json"
+    WORKFLOW_JSON = "/opt/serverless/workflows/image2image.json"
     
     def __init__(self, payload):
         super().__init__(payload, self.WORKFLOW_JSON)
@@ -29,22 +29,13 @@ class Text2Image(BaseHandler):
             20)
         self.prompt["prompt"]["3"]["inputs"]["sampler_name"] = self.get_value(
             "sampler_name",
-            "euler")
+            "dpmpp_2m")
         self.prompt["prompt"]["3"]["inputs"]["scheduler"] = self.get_value(
             "scheduler",
             "normal")
-        self.prompt["prompt"]["4"]["inputs"]["ckpt_name"] = self.get_value(
-            "ckpt_name",
-            "v1-5-pruned-emaonly.ckpt")
-        self.prompt["prompt"]["5"]["inputs"]["width"] = self.get_value(
-            "width",
-            512)
-        self.prompt["prompt"]["5"]["inputs"]["height"] = self.get_value(
-            "height",
-            512)
-        self.prompt["prompt"]["5"]["inputs"]["batch_size"] = self.get_value(
-            "batch_size",
-            1)
+        self.prompt["prompt"]["3"]["inputs"]["denoise"] = self.get_value(
+            "denoise",
+            0.8700000000000001)
         self.prompt["prompt"]["6"]["inputs"]["text"] = self.get_value(
             "include_text",
             "")
@@ -52,7 +43,12 @@ class Text2Image(BaseHandler):
             "exclude_text",
             "")
         self.prompt["prompt"]["9"]["inputs"]["filename_prefix"] = f"{self.request_id}/img-{timestr}"
-
+        self.prompt["prompt"]["10"]["inputs"]["image"] = self.get_value(
+            "input_image",
+            "")
+        self.prompt["prompt"]["14"]["inputs"]["ckpt_name"] = self.get_value(
+            "ckpt_name",
+            "v1-5-pruned-emaonly.ckpt")
         
         
 """
@@ -60,17 +56,13 @@ Example Request Body:
 
 {
     "input": {
-        "handler": "Text2Image",
+        "handler": "Image2Image",
         "aws_bucket_name": "ai-dock",
-        "steps": 20,
         "ckpt_name": "v1-5-pruned-emaonly.ckpt",
-        "sampler_name": "euler",
-        "scheduler": "normal",
-        "include_text": "A scuba diver exploring an ancient shipwreck",
-        "exclude_text": "steel, modern, cartoon",
-        "width": 512,
-        "height": 512,
-        "batch_size": 1
+        "include_text": "photograph of a victorian woman, arms outstretched with angel wings. cloudy sky, meadow grass",
+        "exclude_text": "watermark, text",
+        "denoise": 0.87,
+        "input_image": "https://raw.githubusercontent.com/comfyanonymous/ComfyUI/master/input/example.png"
         }
 }
 

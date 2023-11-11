@@ -50,7 +50,7 @@ class BaseHandler:
             return self.payload[key]
     
     def get_input_dir(self):
-        return f"{self.INPUT_DIR}{self.request_id}/"
+        return f"{self.INPUT_DIR}"
     
     def get_output_dir(self):
         return f"{self.OUTPUT_DIR}"
