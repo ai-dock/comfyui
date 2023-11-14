@@ -11,34 +11,43 @@ services:
         
     image: ghcr.io/ai-dock/comfyui:${IMAGE_TAG:-latest-jupyter}
     
+    ## For Nvidia GPU's - You probably want to uncomment this
+    #deploy:
+    #  resources:
+    #    reservations:
+    #      devices:
+    #        - driver: nvidia
+    #          count: all
+    #          capabilities: [gpu]
+    
     security_opt:
-      # For Rclone mount
+      ## For Rclone mount
       - apparmor:unconfined
-      # For AMD GPU
+      ## For AMD GPU
       #- seccomp:unconfined
     
     cap_add:
-      # For Rclone mount
+      ## For Rclone mount
       - SYS_ADMIN
     
     devices:
-      # For Rclone mount
+      ## For Rclone mount
       - "/dev/fuse:/dev/fuse"
-      # For AMD GPU
+      ## For AMD GPU
       #- "/dev/kfd:/dev/kfd"
       #- "/dev/dri:/dev/dri"
       
-    # For AMD GPU
+    ## For AMD GPU
     #group_add:
     #  - video
     #  - render
-    
+              
     volumes:
-      # For Rclone mount
+      ## For Rclone mount
       - /etc/passwd:/etc/passwd:ro
       - /etc/group:/etc/group:ro
       - ./config/rclone:/etc/rclone
-      # Workspace
+      ## Workspace
       - ./workspace:${WORKSPACE:-/workspace/}:rshared
       # Will echo to root-owned authorized_keys file;
       # Avoids changing local file owner
@@ -62,6 +71,7 @@ services:
     environment:
         # Don't enclose values in quotes
         - COMFYUI_BRANCH=${COMFYUI_BRANCH:-master}
+        - AUTO_UPDATE=${AUTO_UPDATE:-true}
         - COMFYUI_FLAGS=${COMFYUI_FLAGS:-}
         - COMFYUI_PORT=${COMFYUI_PORT:-8188}
         - JUPYTER_MODE=${JUPYTER_MODE:-lab}
