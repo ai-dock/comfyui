@@ -3,3 +3,4 @@ build/COPY_ROOT_EXTRA/
 config/authorized_keys
 config/rclone
 tpdocs/
+.env

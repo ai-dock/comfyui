@@ -59,8 +59,6 @@ services:
         - ${SSH_PORT_HOST:-2222}:${SSH_PORT:-22}
         # redirect to Cloudflare quick tunnel
         - ${REDIRECTOR_PORT_HOST:-1111}:1111
-        # Websocket log viewer
-        - ${LOG_VIEWER_PORT_HOST:-1122}:1122
         # ComfyUI web interface
         - ${COMFYUI_PORT_HOST:-8188}:${COMFYUI_PORT:-8188}
         # Jupyter server
@@ -75,7 +73,8 @@ services:
         - COMFYUI_FLAGS=${COMFYUI_FLAGS:-}
         - COMFYUI_PORT=${COMFYUI_PORT:-8188}
         - JUPYTER_MODE=${JUPYTER_MODE:-lab}
-        # Allows running true SSH alongside provider proxy SSH
+        - DIRECT_ADDRESS=${DIRECT_ADDRESS:-127.0.0.1}
+        - DIRECT_ADDRESS_GET_WAN=${DIRECT_ADDRESS_GET_WAN:-false}
         - SSH_PORT=${SSH_PORT:-22}
         - WORKSPACE=${WORKSPACE:-/workspace}
         - WORKSPACE_SYNC=${WORKSPACE_SYNC:-true}
@@ -86,4 +85,3 @@ services:
         - WEB_PASSWORD=${WEB_PASSWORD:-password}
         - SERVERLESS=${SERVERLESS:-false}
         #- PROVISIONING_SCRIPT=${PROVISIONING_SCRIPT:-}
-        - OPT_SYNC=ComfyUI:serverless
