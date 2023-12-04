@@ -310,7 +310,7 @@ To learn more about the serverless API see the [serverless section](#runpod-serv
 <details>
   <summary>API Playground</summary>
 
-    ![openapi playground](https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api1.png)
+    <img src="https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api1.png">
 
 </details>
 
@@ -347,19 +347,19 @@ A simple web-based log viewer and process manager are included for convenience.
 <details>
   <summary>Service Portal links</summary>
   
-    ![Service Portal links page](https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/serviceportal-links.png)
+    <img src="https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/serviceportal-links.png">
 
 </details>
 <details>
   <summary>Service Portal logs</summary>
 
-    ![Service Portal logs page](https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/serviceportal-logs.png)
+    <img src="https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/serviceportal-logs.png">
 
 </details>
 <details>
   <summary>Service Portal process manager</summary>
 
-    ![Service Portal processes page](https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/serviceportal-processes.png)
+    <img src="https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/serviceportal-processes.png">
 
 </details>
 
@@ -521,7 +521,7 @@ You should set `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL` 
 <details>
   <summary>Serverless template example</summary>
 
-    ![RunPod serverles template](https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/runpod-template.png)
+    <img src="https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/runpod-template.png">
 
 </details>
 
@@ -548,9 +548,9 @@ This is the most flexible of all handlers.
 <details>
   <summary>RawWorkflow schema</summary>
 
-    ![RawWorkflow schema](https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api-schema-rawworkflow.png)
+    <img src="https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api-schema-rawworkflow.png">
 
-    [example payload](https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/raw_controlnet_t2i_adapters.json)
+    <a target="_blank" href="https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/raw_controlnet_t2i_adapters.json">Example payload</a>
 
 </details>
 
@@ -564,9 +564,9 @@ You can define several overrides to modify the workflow before processing.
 <details>
   <summary>Text2Image schema</summary>
 
-    ![Text2Image schema](https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api-schema-text2image.png)
+    <img src="https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api-schema-text2image.png">
 
-    [example payload](https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/bound_text2image.json)
+    <a target="_blank" href="https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/bound_text2image.json">Example payload</a>
 
 </details>
 
@@ -579,9 +579,9 @@ You can define several overrides to modify the workflow before processing.
 <details>
   <summary>Image2Image schema</summary>
 
-    ![Image2Image schema](https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api-schema-text2image.png)
+    <img src="https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api-schema-text2image.png">
 
-    [example payload](https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/bound_image2image.json)
+    <a target="_blank" href="https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/bound_image2image.json">Example payload</a>
 
 </details>
 
