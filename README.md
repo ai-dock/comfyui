@@ -309,9 +309,7 @@ To learn more about the serverless API see the [serverless section](#runpod-serv
 
 <details>
   <summary>API Playground</summary>
-
     <img src="https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api1.png">
-
 </details>
 
 
@@ -346,21 +344,17 @@ A simple web-based log viewer and process manager are included for convenience.
 
 <details>
   <summary>Service Portal links</summary>
-  
     <img src="https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/serviceportal-links.png">
-
 </details>
+
 <details>
   <summary>Service Portal logs</summary>
-
     <img src="https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/serviceportal-logs.png">
-
 </details>
+
 <details>
   <summary>Service Portal process manager</summary>
-
     <img src="https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/serviceportal-processes.png">
-
 </details>
 
 ### Cloudflared
@@ -520,9 +514,7 @@ You should set `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL` 
 
 <details>
   <summary>Serverless template example</summary>
-
     <img src="https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/runpod-template.png">
-
 </details>
 
 If passed in the payload these variables should be in lowercase.
@@ -547,11 +539,9 @@ This is the most flexible of all handlers.
 
 <details>
   <summary>RawWorkflow schema</summary>
-
     <img src="https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api-schema-rawworkflow.png">
-
+    <br><br>
     <a target="_blank" href="https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/raw_controlnet_t2i_adapters.json">Example payload</a>
-
 </details>
 
 
@@ -563,9 +553,8 @@ You can define several overrides to modify the workflow before processing.
 
 <details>
   <summary>Text2Image schema</summary>
-
     <img src="https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api-schema-text2image.png">
-
+    <br><br>
     <a target="_blank" href="https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/bound_text2image.json">Example payload</a>
 
 </details>
@@ -578,11 +567,8 @@ You can define several overrides to modify the workflow before processing.
 
 <details>
   <summary>Image2Image schema</summary>
-
-    <img src="https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api-schema-text2image.png">
-
-    <a target="_blank" href="https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/bound_image2image.json">Example payload</a>
-
+  <img src="https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api-schema-text2image.png">
+  <a target="_blank" href="https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/bound_image2image.json">Example payload</a>
 </details>
 
 These handlers demonstrate how you can create a very simple endpoint which will require very little frontend work to implement.
