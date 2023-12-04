@@ -1,0 +1,229 @@
+openapi: 3.1.0
+info:
+    title: ComfyUI API
+    description: Send a payload to a local ComfyUI API and have your image(s) uploaded to s3 compatible storage
+    version: 0.1.0
+
+components:
+    securitySchemes:
+        basicAuth:
+            type: http
+            scheme: basic
+    schemas:
+        BaseRequest:
+            type: object
+            required:
+              - input
+            properties:
+                id:
+                    type: string
+                    description: Define the job ID. Not required in RunPod serverless but useful if you have a queue in front of this endpoint
+                input:
+                    type: object
+                    required:
+                      - handler
+                    properties:
+                        handler:
+                            type: string
+                            description: Handler class name
+                        aws_access_key_id:
+                            type: string
+                            required: false
+                            description: Alternatively set AWS_ACCESS_KEY_ID environment variable
+                        aws_secret_access_key:
+                            type: string
+                            required: false
+                            description: Alternatively set AWS_SECRET_ACCESS_KEY environment variable
+                        aws_endpoint_url:
+                            type: string
+                            required: false
+                            description: Alternatively set AWS_ENDPOINT_URL environment variable
+                        aws_bucket_name:
+                            type: string
+                            required: false
+                            description: Alternatively set AWS_BUCKET_NAME environment variable
+        RawWorkflow:
+            description: Downloads URLs to input directory with no additional processing - Your application must modify the workflow as needed.
+            allOf:
+                - $ref: '#/components/schemas/BaseRequest'
+                - type: object
+                  properties:
+                    input:
+                        type: object
+                        required:
+                          - workflow_json
+                        properties:
+                            workflow_json:
+                                type: object
+                                description: A ComfyUI workflow. Ensure all nodes and models are available to your container.
+        Text2Image:
+            description: Basic request bound to static workflow file text2image.json. Requires very little frontend work to implement.
+            allOf:
+                - $ref: '#/components/schemas/BaseRequest'
+                - type: object
+                  properties:
+                    input:
+                        type: object
+                        properties:
+                            seed:
+                                type: integer
+                                description: Random if not provided
+                            steps:
+                                type: integer
+                            sampler_name:
+                                type: string
+                            scheduler:
+                                type: string
+                            ckpt_name:
+                                type: string
+                                description: Checkpoint file name. Ensure it is present in the container.
+                            width:
+                                type: integer
+                            height:
+                                type: integer
+                            include_text:
+                                type: string
+                                description: Positive prompt
+                            exclude_text:
+                                type: string
+                                description: Negative prompt
+        Image2Image:
+            description: Basic request bound to static workflow file image2image.json. Requires very little frontend work to implement.
+            allOf:
+                - $ref: '#/components/schemas/BaseRequest'
+                - type: object
+                  properties:
+                    input:
+                        type: object
+                        properties:
+                            seed:
+                                type: integer
+                                description: Random if not provided
+                            steps:
+                                type: integer
+                            sampler_name:
+                                type: string
+                            scheduler:
+                                type: string
+                            denoise:
+                                type: number
+                            ckpt_name:
+                                type: string
+                                description: Checkpoint file name. Ensure it is present in the container.
+                            include_text:
+                                type: string
+                                description: Positive prompt
+                            exclude_text:
+                                type: string
+                                description: Negative prompt
+                            input_image:
+                                type: string
+                                description: URL of input image
+                                
+security:
+  - basicAuth: []
+
+paths:
+    /rp-api/runsync:
+        post:
+            summary: "RunPod compatible synchronous endpoint"
+            description: "<p>Only /runsync (blocking) is available in this hosted API. Full functionality is available when running on <a href='https://link.ai-dock.org/runpod-serverless' target='_blank'>RunPod's serverless infrastructure</a>.</p><p>This is a work-in-progress and will receive feature updates.</p><p>aws_* can be omitted if you have set the corresponding AWS_* environment variables.</p><p>The examples will use models and nodes installed by the default provisioning script.</p><p>You must have an s3 compatible backend defined - <a href='https://link.ai-dock.org/backblaze-b2' target='_blank'>Backblaze b2</a> may be a good choice.</p>"
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RawWorkflow'
+                        examples:
+                            RawWorkflow (Text2Image):
+                                description: |
+                                    Text to image using a simple workflow.
+                                    
+                                    Downloads URLs to input directory with no additional processing - Your application must modify the workflow as needed.
+                                    
+                                    Ensure that you set your aws_* values.
+                                externalValue: 'https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/raw_text2image.json'
+                            RawWorkflow (Image2Image):
+                                description: |
+                                    Image to image using a simple workflow.
+                                    
+                                    Downloads URLs to input directory with no additional processing - Your application must modify the workflow as needed.
+                                    
+                                    Ensure that you set your aws_* values.
+                                externalValue: 'https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/raw_image2image.json'
+                            RawWorkflow (Controlnet/T2I Adapters):
+                                description: |
+                                    Controlnet example using diff_control_sd15_depth_fp16.safetensors.
+                                    
+                                    Downloads URLs to input directory with no additional processing - Your application must modify the workflow as needed.
+                                    
+                                    Ensure that you set your aws_* values.
+                                externalValue: 'https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/raw_controlnet_t2i_adapters.json'
+                            RawWorkflow (Text2Image Upscaling):
+                                description: |
+                                    Text to image with RealESRGAN_x4 upscaling.
+                                    
+                                    Downloads URLs to input directory with no additional processing - Your application must modify the workflow as needed.
+                                    
+                                    Ensure that you set your aws_* values.
+                                externalValue: 'https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/raw_upscale.json'
+                            Text2Image (Workflow Bound):
+                                description: |
+                                    Text to image bound to workflow file text2image.json
+                                    
+                                    Ensure that you set your aws_* values.
+                                externalValue: 'https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/bound_text2image.json'
+                            Image2Image (Workflow Bound):
+                                description: |
+                                    Image to image bound to workflow file image2image.json
+                                    
+                                    Ensure that you set your aws_* values.
+                                externalValue: 'https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/bound_image2image.json'
+                                
+            responses:
+                default:
+                    description: Success (RP is returning 200 for failures(!))
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    output:
+                                        type: object
+                                        properties:
+                                            images:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        local_path:
+                                                            type: string
+                                                            description: File location on local disk
+                                                            example: /opt/ComfyUI/output/<request_id>/ComfyUI__1.png
+                                                        url:
+                                                            type: string
+                                                            description: URL to uploaded image
+                                                            example: https://s3.provider.com/<bucket_name>/<request_id>/ComfyUI__1.png
+                                            timings:
+                                                type: object
+                                                properties:
+                                                    job_time_received:
+                                                        type: string
+                                                        description: The time the job was received by the worker
+                                                        example: datetime string
+                                                    job_time_queued:
+                                                        type: string
+                                                        description: The time the job was put into the ComfyUI queue
+                                                        example: datetime string
+                                                    job_time_processed:
+                                                        type: string
+                                                        description: The time the job was completed by ComfyUI
+                                                        example: datetime string
+                                                    job_time_completed:
+                                                        type: string
+                                                        description: The time the job was finished and URLs for all artifacts retrieved
+                                                        example: datetime string
+                                                    job_time_total:
+                                                        type: integer
+                                                        description: Total time in seconds for job to complete
+                                                        example: 12

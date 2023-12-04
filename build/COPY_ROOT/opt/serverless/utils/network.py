@@ -19,7 +19,9 @@ class Network:
     def download_file(url, target_dir, request_id):
         try:
             os.makedirs(target_dir, exist_ok=True)
-            response = requests.get(url)
+            response = requests.get(url, timeout=5)
+            if response.status_code > 399:
+                raise requests.RequestException(f"Unable to download {url}")
             if "content-disposition" in response.headers:
                 content_disposition = response.headers["content-disposition"]
                 filename = content_disposition.split("filename=")[1]
@@ -32,5 +34,5 @@ class Network:
         except:
             raise
 
-        print(f"Downloaded {file} to {target_dir}")
+        print(f"Downloaded {url} to {filepath}")
         return filepath

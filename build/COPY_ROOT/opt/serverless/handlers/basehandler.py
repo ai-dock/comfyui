@@ -4,7 +4,6 @@ import datetime
 import time
 import os
 import base64
-import uuid
 from utils.s3utils import s3utils
 from utils.network import Network
 
@@ -14,18 +13,22 @@ class BaseHandler:
     ENDPOINT_HISTORY="http://127.0.0.1:18188/history"
     INPUT_DIR=f"{os.environ.get('WORKSPACE')}/ComfyUI/input/"
     OUTPUT_DIR=f"{os.environ.get('WORKSPACE')}/ComfyUI/output/"
-
+    
+    request_id = None
     comfyui_job_id = None
     
+    
     def __init__(self, payload, workflow_json = None):
-          self.job_time_received = datetime.datetime.now()
-          self.payload = payload
-          self.workflow_json = workflow_json
-          self.s3utils = s3utils(self.get_s3_settings())
-          self.request_id = str(self.get_value(
+        self.job_time_received = datetime.datetime.now()
+        self.payload = payload
+        self.workflow_json = workflow_json
+        self.s3utils = s3utils(self.get_s3_settings())
+        self.request_id = str(self.get_value(
             "request_id",
-            uuid.uuid4()))
-          self.set_prompt()
+            None
+            )
+        )
+        self.set_prompt()
     
     def set_prompt(self):
         if self.workflow_json:
@@ -39,13 +42,8 @@ class BaseHandler:
             raise IndexError(f"{key} required but not set")
         elif key not in self.payload:
             return default
-        elif Network.is_url(self.payload[key]):
-            return os.path.basename(Network.download_file(
-                self.payload[key], 
-                self.get_input_dir(), 
-                self.request_id
-                    )
-                )
+        elif Network.is_url(self.payload[key]) and not key.startswith("aws_"):
+            return self.get_url_content(self.payload[key])
         else:
             return self.payload[key]
     
@@ -54,6 +52,25 @@ class BaseHandler:
     
     def get_output_dir(self):
         return f"{self.OUTPUT_DIR}"
+    
+    def replace_urls(self, data):
+        if isinstance(data, dict):
+            for key, value in data.items():
+                data[key] = self.replace_urls(value)
+        elif isinstance(data, list):
+            for i, item in enumerate(data):
+                data[i] = self.replace_urls(item)
+        elif isinstance(data, str) and Network.is_url(data):
+            data = self.get_url_content(data)
+        return data
+
+    def get_url_content(self, url):
+        return os.path.basename(Network.download_file(
+            url, 
+            self.get_input_dir(), 
+            self.request_id
+                )
+            )
 
     def is_server_ready(self):
         try:
@@ -117,17 +134,21 @@ class BaseHandler:
             "images": [],
             "timings": {}
         }
-
+        
+        custom_output_dir = f"{self.OUTPUT_DIR}{self.request_id}"
+        os.makedirs(custom_output_dir, exist_ok = True)
         for item in outputs:
             if "images" in outputs[item]:
                 for image in outputs[item]["images"]:
-                    path = f"{self.OUTPUT_DIR}{image['subfolder']}/{image['filename']}"
-                    key = f"{image['subfolder']}/{image['filename']}"
+                    original_path = f"{self.OUTPUT_DIR}{image['subfolder']}/{image['filename']}"
+                    new_path = f"{custom_output_dir}/{image['filename']}"
+                    os.rename(original_path, new_path)
+                    key = f"{self.request_id}/{image['filename']}"
                     self.result["images"].append({
-                        "local_path": path,
+                        "local_path": new_path,
                         #"base64": self.image_to_base64(path),
                         # make this work first, then threads
-                        "url": self.s3utils.file_upload(path, key)
+                        "url": self.s3utils.file_upload(new_path, key)
                     })
         
         self.job_time_completed = datetime.datetime.now()
@@ -147,6 +168,8 @@ class BaseHandler:
         settings["aws_secret_access_key"] = self.get_value("aws_secret_access_key", os.environ.get("AWS_SECRET_ACCESS_KEY"))
         settings["aws_endpoint_url"] = self.get_value("aws_endpoint_url", os.environ.get("AWS_ENDPOINT_URL"))
         settings["aws_bucket_name"] = self.get_value("aws_bucket_name", os.environ.get("AWS_BUCKET_NAME"))
+        settings["connect_timeout"] = 5
+        settings["connect_attempts"] = 1
         return settings
     
     def handle(self):

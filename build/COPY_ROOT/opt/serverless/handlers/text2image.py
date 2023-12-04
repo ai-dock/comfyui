@@ -7,7 +7,8 @@ import time
 Handler classes are generally bound to a specific workflow file.
 To modify values we have to be confident in the json structure.
 
-One exception - RawWorkflow will send payload['workflow_json'] to the ComfyUI API - TODO
+One exception - RawWorkflow will send payload['workflow_json'] to the ComfyUI API after
+downloading any URL's to the input directory and replacing the URL with a local path.
 """
 
 class Text2Image(BaseHandler):
@@ -61,17 +62,20 @@ Example Request Body:
 {
     "input": {
         "handler": "Text2Image",
-        "aws_bucket_name": "ai-dock",
+        "aws_access_key_id": "your-s3-access-key",
+        "aws_secret_access_key": "your-s3-secret-access-key",
+        "aws_endpoint_url": "https://my-endpoint.backblaze.com",
+        "aws_bucket_name": "your-bucket",
         "steps": 20,
         "ckpt_name": "v1-5-pruned-emaonly.ckpt",
         "sampler_name": "euler",
         "scheduler": "normal",
-        "include_text": "A scuba diver exploring an ancient shipwreck",
-        "exclude_text": "steel, modern, cartoon",
+        "include_text": "beautiful scenery nature glass bottle landscape, , purple galaxy bottle,",
+        "exclude_text": "text, watermark",
         "width": 512,
         "height": 512,
         "batch_size": 1
-        }
+    }
 }
 
 """
