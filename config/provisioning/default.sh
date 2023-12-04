@@ -12,8 +12,8 @@ NODES=(
 CHECKPOINT_MODELS=(
     "https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.ckpt"
     #"https://huggingface.co/stabilityai/stable-diffusion-2-1/resolve/main/v2-1_768-ema-pruned.ckpt"
-    "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors"
-    "https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sd_xl_refiner_1.0.safetensors"
+    #"https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors"
+    #"https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sd_xl_refiner_1.0.safetensors"
 )
 
 LORA_MODELS=(
@@ -35,6 +35,7 @@ ESRGAN_MODELS=(
 CONTROLNET_MODELS=(
     "https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/control_canny-fp16.safetensors"
     #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/control_depth-fp16.safetensors"
+    "https://huggingface.co/kohya-ss/ControlNet-diff-modules/resolve/main/diff_control_sd15_depth_fp16.safetensors"
     #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/control_hed-fp16.safetensors"
     #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/control_mlsd-fp16.safetensors"
     #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/control_normal-fp16.safetensors"
@@ -60,19 +61,19 @@ function provisioning_start() {
     provisioning_print_header
     provisioning_get_nodes
     provisioning_get_models \
-        "/opt/ComfyUI/models/checkpoints" \
+        "${WORKSPACE}/storage/stable_diffusion/models/ckpt" \
         "${CHECKPOINT_MODELS[@]}"
     provisioning_get_models \
-        "/opt/ComfyUI/models/loras" \
+        "${WORKSPACE}/storage/stable_diffusion/models/lora" \
         "${LORA_MODELS[@]}"
     provisioning_get_models \
-        "/opt/ComfyUI/models/controlnet" \
+        "${WORKSPACE}/storage/stable_diffusion/models/controlnet" \
         "${CONTROLNET_MODELS[@]}"
     provisioning_get_models \
-        "/opt/ComfyUI/models/vae" \
+        "${WORKSPACE}/storage/stable_diffusion/models/vae" \
         "${VAE_MODELS[@]}"
     provisioning_get_models \
-        "/opt/ComfyUI/models/upscale_models" \
+        "${WORKSPACE}/storage/stable_diffusion/models/esrgan" \
         "${ESRGAN_MODELS[@]}"
     provisioning_print_end
 }

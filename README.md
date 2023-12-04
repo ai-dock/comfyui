@@ -90,6 +90,19 @@ Supported Pytorch versions: `2.0.1`
 
 Supported Platforms: `NVIDIA CUDA`, `AMD ROCm`, `CPU`
 
+
+## Building Images
+
+You can self-build from source by editing `docker-compose.yaml` or `.env` and running `docker compose build`.
+
+It is a good idea to leave the source tree alone and copy any edits you would like to make into `build/COPY_ROOT_EXTRA/...`. The structure within this directory will be overlayed on `/` at the end of the build process.
+
+As this overlaying happens after the main build, it is easy to add extra files such as ML models and datasets to your images. You will also be able to rebuild quickly if your file overrides are made here.
+
+Any directories and files that you add into `opt/storage` will be made available in the running container at `$WORKSPACE/storage`.  
+
+This directory is monitored by `inotifywait`. Any items appearing in this directory will be automatically linked to the application directories as defined in `/opt/ai-dock/storage_monitor/etc/mappings.sh`.  This is particularly useful if you need to run several applications that each need to make use of the stored files.
+
 ## Run Locally
 
 A 'feature-complete' `docker-compose.yaml` file is included for your convenience. All features of the image are included - Simply edit the environment variables in `.env`, save and then type `docker compose up`.
@@ -162,7 +175,7 @@ You can use the included `cloudflared` service to make secure connections withou
 | `PROVISIONING_SCRIPT`    | URL of a remote script to execute on init. See [note](#provisioning-script). |
 | `RCLONE_*`               | Rclone configuration - See [rclone documentation](https://rclone.org/docs/#config-file) |
 | `SKIP_ACL`               | Set `true` to skip modifying workspace ACL |
-| `SSH_PORT`               | Set a non-standard port for SSH (default `22`) |
+| `SSH_PORT_LOCAL`         | Set a non-standard port for SSH (default `22`) |
 | `SSH_PUBKEY`             | Your public key for SSH |
 | `WEB_ENABLE_AUTH`        | Enable password protection for web services (default `true`) |
 | `WEB_USER`               | Username for web services (default `user`) |
@@ -203,7 +216,7 @@ The URL must point to a plain text file - GitHub Gists/Pastebin (raw) are suitab
 If you are running locally you may instead opt to mount a script at `/opt/ai-dock/bin/provisioning.sh`.
 
 >[!NOTE]  
->If configured, `sshd`, `caddy`, `cloudflared`, `rclone`, `port redirector` & `logtail` will be launched before provisioning; Any other processes will launch after.
+>If configured, `sshd`, `caddy`, `cloudflared`, `rclone`, `serviceportal`, `storagemonitor` & `logtail` will be launched before provisioning; Any other processes will launch after.
 
 
 >[!WARNING]  
@@ -282,6 +295,24 @@ To manage this service you can use `supervisorctl [start|stop|restart] comfyui`.
 >[!NOTE]  
 >_If you have enabled `CF_QUICK_TUNNELS` a secure `https://[random-auto-generated-sub-domain].trycloudflare.com` link will be created. You can find it at `/var/log/supervisor/quicktunnel-comfyui.log`_
 
+### ComfyUI RP API
+
+This service is available on port `8188` and is used to test the [RunPod serverless](https://link.ai-dock.org/runpod-serverless) API.
+
+You can access the api directly at `/rp-api/runsync` or you can use the Swager/openAPI playground at `/rp-api/docs`.
+
+There are several example payloads included.
+
+This API is available on all platforms - But the container can ony run in serverless mode on RunPod infrastructure.
+
+To learn more about the serverless API see the [serverless section](#runpod-serverless)
+
+<details>
+  <summary>API Playground</summary>
+    ![openapi playground](https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api1.png)
+</details>
+
+
 ### Jupyter (with tag `jupyter` only)
 
 The jupyter server will launch a `lab` instance unless you specify `JUPYTER_MODE=notebook`.
@@ -310,6 +341,19 @@ The service will bind to port `1111`.
 For each service, you will find a direct link and, if you have set `CF_QUICK_TUNNELS=true`, a link to the service via a fast and secure Cloudflare tunnel.
 
 A simple web-based log viewer and process manager are included for convenience.
+
+<details>
+  <summary>Service Portal links</summary>
+    ![Service Portal links page](https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/serviceportal-links.png)
+</details>
+<details>
+  <summary>Service Portal logs</summary>
+    ![Service Portal logs page](https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/serviceportal-logs.png)
+</details>
+<details>
+  <summary>Service Portal process manager</summary>
+    ![Service Portal processes page](https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/serviceportal-processes.png)
+</details>
 
 ### Cloudflared
 
@@ -385,6 +429,10 @@ This script follows and prints the log files for each of the above services to s
 
 If you are logged into the container you can follow the logs by running `logtail.sh` in your shell.
 
+### Storage Monitor
+
+This service detects changes to files in `$WORKSPACE/storage` and creates symbolic links to the application directories defined in `/opt/ai-dock/storage_monitor/etc/mappings.sh`
+
 ## Open Ports
 
 Some ports need to be exposed for the services to run or for certain features of the provided software to function
@@ -451,5 +499,82 @@ A curated list of VM providers currently offering GPU instances:
 - [Vultr](https://link.ai-dock.org/vultr.com)
 
 ---
+
+## RunPod Serverless
+
+The container can be used as a [RunPod serverless](https://links.ai-dock.org/runpod-serverless) worker.  To enable serverless mode you must run the container with environment variables `SERVERLESS=true` and `WORKSPACE=runpod-volume`.
+
+The handlers will accept a job, process it and upload your images to s3 compatible storage.
+
+You may either set your s3 credentials as environment variables or you can pass them to the worker in the payload.
+
+You should set `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL` and `AWS_BUCKET_NAME`.
+
+<details>
+  <summary>Serverless template example</summary>
+    ![RunPod serverles template](https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/runpod-template.png)
+</details>
+
+If passed in the payload these variables should be in lowercase.
+
+Failure to correctly set your credentials will not resut in job failure and you can still retrieve your images from the network volume.
+
+When used in serverless mode, the container will skip provisioning and will not update ComfyUI or the nodes on start so you must either ensure everyting you need is built into the image (see [Building Images](#building-images)) or first run the container with a network volume to get everything set up before launching your workers.
+
+After launching a serverless worker, any instances of the container launched on the network volume in GPU cloud will also skip auto-updating. All updates must be done manually.
+
+The API is documented in openapi format. You can test it in a running container on the ComfyUI port at `/rp-api/docs` - See [ComfyUI RP API](#comfyui-rp-api) for more information.
+
+---
+
+The API can use multiple handlers which you may define in the payload. Three handlers have been included for your convenience
+
+### Handler: RawWorkflow
+
+This handler should be passed a full ComfyUI workflow in the payload.  It will detect any URL's and download the files into the input directory before replacing the URL value with the local path of the resource.  This is very useful when working with image to image and controlnets.
+
+This is the most flexible of all handlers.
+
+<details>
+  <summary>RawWorkflow schema</summary>
+    ![RawWorkflow schema](https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api-schema-rawworkflow.png)
+
+    [example payload](https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/raw_controlnet_t2i_adapters.json)
+</details>
+
+
+### Handler: Text2Image
+
+This is a basic handler that is bound to a static workflow file (`/opt/serverless/workflows/text2image.json`).
+
+You can define several overrides to modify the workflow before processing.
+
+<details>
+  <summary>Text2Image schema</summary>
+    ![Text2Image schema](https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api-schema-text2image.png)
+
+    [example payload](https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/bound_text2image.json)
+</details>
+
+### Handler: Image2Image
+
+This is a basic handler that is bound to a static workflow file (`/opt/serverless/workflows/image2image.json`).
+
+You can define several overrides to modify the workflow before processing. 
+
+<details>
+  <summary>Image2Image schema</summary>
+    ![Image2Image schema](https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api-schema-text2image.png)
+
+    [example payload](https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/bound_image2image.json)
+</details>
+
+These handlers demonstrate how you can create a very simple endpoint which will require very little frontend work to implement.
+
+You can find example payloads for these handlers [here](https://github.com/ai-dock/comfyui/tree/main/build/COPY_ROOT/opt/serverless/docs/example_payloads)
+
+
+---
+
 
 _The author ([@robballantyne](https://github.com/robballantyne)) may be compensated if you sign up to services linked in this document. Testing multiple variants of GPU images in many different environments is both costly and time-consuming; This helps to offset costs_

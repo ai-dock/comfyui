@@ -52,7 +52,6 @@ class Text2Image(BaseHandler):
         self.prompt["prompt"]["7"]["inputs"]["text"] = self.get_value(
             "exclude_text",
             "")
-        self.prompt["prompt"]["9"]["inputs"]["filename_prefix"] = f"{self.request_id}/img-{timestr}"
 
         
         

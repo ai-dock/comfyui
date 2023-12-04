@@ -21,10 +21,11 @@ Handler to be specified in input.handler
 def worker(event):
     result = {}
     try:
-        if is_test_job(event):
-            event["id"] = str(uuid.uuid4())
         payload = event["input"]
-        payload["request_id"] = event["id"]
+        if is_test_job(event):
+            payload["request_id"] = str(uuid.uuid4())
+        else:
+            payload["request_id"] = event["id"]
         handler = get_handler(payload)
         result = handler.handle()
     except Exception as e:
