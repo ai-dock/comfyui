@@ -510,7 +510,7 @@ A curated list of VM providers currently offering GPU instances:
 
 ## RunPod Serverless
 
-The container can be used as a [RunPod serverless](https://links.ai-dock.org/runpod-serverless) worker.  To enable serverless mode you must run the container with environment variables `SERVERLESS=true` and `WORKSPACE=runpod-volume`.
+The container can be used as a [RunPod serverless](https://link.ai-dock.org/runpod-serverless) worker.  To enable serverless mode you must run the container with environment variables `SERVERLESS=true` and `WORKSPACE=runpod-volume`.
 
 The handlers will accept a job, process it and upload your images to s3 compatible storage.
 
@@ -582,7 +582,7 @@ You can define several overrides to modify the workflow before processing.
     ![Image2Image schema](https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api-schema-text2image.png)
 
     [example payload](https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/bound_image2image.json)
-    
+
 </details>
 
 These handlers demonstrate how you can create a very simple endpoint which will require very little frontend work to implement.
