@@ -65,7 +65,8 @@ function start() {
         fi
     fi
     
-    printf "Starting %s...\n" ${SERVICE_NAME}
+    printf "%s started: %s\n" "${SERVICE_NAME}" "$(date +"%x %T.%3N")" >> /var/log/timing_data
+    printf "Starting %s...\n" "${SERVICE_NAME}"
     
     kill $(lsof -t -i:$LISTEN_PORT) > /dev/null 2>&1 &
     wait -n
