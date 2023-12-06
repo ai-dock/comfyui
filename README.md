@@ -82,7 +82,7 @@ Tags follow these patterns:
 
 Browse [here](https://github.com/ai-dock/comfyui/pkgs/container/comfyui) for an image suitable for your target environment.
 
-You can also self-build from source by editing `.env` and running `docker compose build`.
+You can also [build from source](#building-images) by editing `.env` and running `docker compose build`.
 
 Supported Python versions: `3.10`
 
@@ -93,15 +93,25 @@ Supported Platforms: `NVIDIA CUDA`, `AMD ROCm`, `CPU`
 
 ## Building Images
 
-You can self-build from source by editing `docker-compose.yaml` or `.env` and running `docker compose build`.
+You can self-build from source by editing `docker-compose.yaml` or `.env` and running `docker compose build`. 
 
-It is a good idea to leave the source tree alone and copy any edits you would like to make into `build/COPY_ROOT_EXTRA/...`. The structure within this directory will be overlayed on `/` at the end of the build process.
+It is a good idea to leave the main source tree alone and copy any extra files you would like in the container into `build/COPY_ROOT_EXTRA/...`. The structure within this directory will be overlayed on `/` near the end of the build process.
 
-As this overlaying happens after the main build, it is easy to add extra files such as ML models and datasets to your images. You will also be able to rebuild quickly if your file overrides are made here.
+After copying has been completed, the script `build/COPY_ROOT_EXTRA/opt/ai-dock/bin/build/layer1/init.sh` will be executed. A template for this file capable of downloading models and nodes is provided for convenience.
 
-Any directories and files that you add into `opt/storage` will be made available in the running container at `$WORKSPACE/storage`.  
+Any directories and files that you add into `opt/storage` will be made available in the running container at `$WORKSPACE/storage` through symbolic links.  
 
-This directory is monitored by `inotifywait`. Any items appearing in this directory will be automatically linked to the application directories as defined in `/opt/ai-dock/storage_monitor/etc/mappings.sh`.  This is particularly useful if you need to run several applications that each need to make use of the stored files.
+This directory is monitored by `inotifywait`. Any items appearing here will be automatically symlinked to the application directories as defined in `/opt/ai-dock/storage_monitor/etc/mappings.sh`.
+
+### Recommended workflow
+
+- Fork this repository and clone
+- Create and switch to a new branch
+- Create `.env` to override the `IMAGE_TAG`
+- Copy non-public models to `build/COPY_ROOT_EXTRA/opt/storage/stable_diffusion/ckpt/`
+- Edit `build/COPY_ROOT_EXTRA/opt/ai-dock/bin/build/layer1/init.sh` to download public models and nodes
+- Run `docker compose build`
+- Run `docker compose push`
 
 ## Run Locally
 
