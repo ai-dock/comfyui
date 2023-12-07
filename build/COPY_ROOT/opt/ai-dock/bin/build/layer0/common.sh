@@ -23,11 +23,17 @@ create_env() {
     exported_env=/tmp/${MAMBA_DEFAULT_ENV}.yaml
     micromamba env export -n ${MAMBA_DEFAULT_ENV} > "${exported_env}"
     $MAMBA_CREATE -n comfyui --file "${exported_env}"
+    
+    # RunPod serverless support
+    $MAMBA_CREATE -n serverless -c defaults python=3.10
+    micromamba run -n serverless $PIP_INSTALL \
+        runpod
 }
+
 
 install_jupyter_kernels() {
     if [[ $IMAGE_BASE =~ "jupyter-pytorch" ]]; then
-        $MAMBA_INSTALL -n comfyui -c conda-forge -y \
+        $MAMBA_INSTALL -n comfyui -c defaults -y \
             ipykernel \
             ipywidgets
         
@@ -46,6 +52,12 @@ install_jupyter_kernels() {
         cp -rf ${kernel_path}/../_template ${dir}
         sed -i 's/DISPLAY_NAME/'"ComfyUI"'/g' ${file}
         sed -i 's/PYTHON_MAMBA_NAME/'"comfyui"'/g' ${file}
+        
+        dir="${kernel_path}/serverless"
+        file="${dir}/kernel.json"
+        cp -rf ${kernel_path}/../_template ${dir}
+        sed -i 's/DISPLAY_NAME/'"Serverless"'/g' ${file}
+        sed -i 's/PYTHON_MAMBA_NAME/'"serverless"'/g' ${file}
     fi
 }
 

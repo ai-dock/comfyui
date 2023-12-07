@@ -2,8 +2,8 @@
 
 trap cleanup EXIT
 
-LISTEN_PORT=18188
-METRICS_PORT=28188
+LISTEN_PORT=${COMFYUI_PORT_LOCAL:-18188}
+METRICS_PORT=${COMFYUI_METRICS_PORT:-28188}
 PROXY_SECURE=true
 
 function cleanup() {
@@ -12,10 +12,9 @@ function cleanup() {
 }
 
 function start() {
-    if [[ -z $COMFYUI_PORT ]]; then
-        COMFYUI_PORT=8188
+    if [[ ! -v COMFYUI_PORT || -z $COMFYUI_PORT ]]; then
+        COMFYUI_PORT=${COMFYUI_PORT_HOST:-8188}
     fi
-    
     PROXY_PORT=$COMFYUI_PORT
     SERVICE_NAME="ComfyUI"
     

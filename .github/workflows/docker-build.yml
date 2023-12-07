@@ -27,8 +27,10 @@ jobs:
           - "jupyter-pytorch"
         python:
           - "3.10"
+          - "3.11"
         pytorch:
           - "2.0.1"
+          - "2.1.1"
     steps:
       -
         name: Free Space
@@ -91,12 +93,18 @@ jobs:
           - "3.10"
         pytorch:
           - "2.0.1"
+          - "2.1.1"
         cuda:
-          - "11.7.1"
           - "11.8.0"
+          - "12.1.0"
+          - "12.2.0"
         level:
           - "base"
-          - "cudnn8-devel"
+        exclude:
+          - cuda: "12.1.0"
+            pytorch: "2.0.1"
+          - cuda: "12.2.0"
+            pytorch: "2.0.1"
     steps:
       -
         name: Free Space
@@ -159,11 +167,18 @@ jobs:
           - "3.10"
         pytorch:
           - "2.0.1"
+          - "2.1.1"
         rocm:
           - "5.4.2"
+          - "5.6"
         level:
           - "runtime"
-        # Templating for future releases
+        exclude:
+          - rocm: "5.4.2"
+            pytorch: "2.1.1"
+          - rocm: "5.6"
+            pytorch: "2.0.1"
+            
     steps:
       -
         name: Free Space
