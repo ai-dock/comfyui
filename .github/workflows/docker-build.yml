@@ -27,7 +27,6 @@ jobs:
           - "jupyter-pytorch"
         python:
           - "3.10"
-          - "3.11"
         pytorch:
           - "2.0.1"
           - "2.1.1"
@@ -97,13 +96,10 @@ jobs:
         cuda:
           - "11.8.0"
           - "12.1.0"
-          - "12.2.0"
         level:
           - "base"
         exclude:
           - cuda: "12.1.0"
-            pytorch: "2.0.1"
-          - cuda: "12.2.0"
             pytorch: "2.0.1"
     steps:
       -
