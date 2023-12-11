@@ -68,6 +68,14 @@ function build_extra_start() {
     build_extra_get_models \
         "/opt/storage/stable_diffusion/models/esrgan" \
         "${ESRGAN_MODELS[@]}"
+     
+    cd /opt/ComfyUI && \
+    micromamba run -n comfyui -e LD_PRELOAD=libtcmalloc.so python main.py \
+        --cpu \
+        --listen 127.0.0.1 \
+        --port 11404 \
+        --disable-auto-launch \
+        --quick-test-for-ci
 }
 
 function build_extra_get_nodes() {
@@ -85,7 +93,7 @@ function build_extra_get_nodes() {
             fi
         else
             printf "Downloading node: %s...\n" "${repo}"
-            git clone "${repo}" "${path}"
+            git clone "${repo}" "${path}" --recursive
             if [[ -e $requirements ]]; then
                 micromamba -n comfyui run ${PIP_INSTALL} -r "${requirements}"
             fi

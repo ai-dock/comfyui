@@ -10,8 +10,9 @@ main() {
 install_comfyui() {
     micromamba run -n comfyui ${PIP_INSTALL} \
         torch=="${PYTORCH_VERSION}" \
-        xformers \
         nvidia-ml-py3
+    
+    micromamba install -n comfyui -c xformers xformers
 
     /opt/ai-dock/bin/update-comfyui.sh
 }
