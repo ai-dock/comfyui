@@ -123,7 +123,8 @@ class BaseHandler:
     def image_to_base64(self, path):
         with open(path, "rb") as f:
             b64 = (base64.b64encode(f.read()))
-        return "data:image/png;charset=utf-8;base64, " + b64
+            base64_string = b64.decode("utf-8")
+        return "data:image/png;base64," + base64_string
     
     def get_result(self, job_id):
         result = requests.get(self.ENDPOINT_HISTORY).json()[self.comfyui_job_id]
