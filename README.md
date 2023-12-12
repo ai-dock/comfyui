@@ -62,23 +62,23 @@ Tags follow these patterns:
 ##### _CUDA_
 - `:pytorch-[pytorch-version]-py[python-version]-cuda-[x.x.x]-base-[ubuntu-version]`
 
-- `:latest-cuda` &rarr; `:pytorch-2.0.1-py3.10-cuda-11.8.0-base-22.04`
+- `:latest-cuda` &rarr; `:pytorch-2.1.1-py3.10-cuda-11.8.0-base-22.04`
 
-- `:latest-cuda-jupyter` &rarr; `:jupyter-pytorch-2.0.1-py3.10-cuda-11.8.0-base-22.04`
+- `:latest-cuda-jupyter` &rarr; `:jupyter-pytorch-2.1.1-py3.10-cuda-11.8.0-base-22.04`
 
 ##### _ROCm_
 - `:pytorch-[pytorch-version]-py[python-version]-rocm-[x.x.x]-runtime-[ubuntu-version]`
 
-- `:latest-rocm` &rarr; `:pytorch-2.0.1-py3.10-rocm-5.4.2-runtime-22.04`
+- `:latest-rocm` &rarr; `:pytorch-2.1.1-py3.10-rocm-5.6-runtime-22.04`
 
-- `:latest-rocm-jupyter` &rarr; `:jupyter-pytorch-2.0.1-py3.10-rocm-5.4.2-runtime-22.04`
+- `:latest-rocm-jupyter` &rarr; `:jupyter-pytorch-2.1.1-py3.10-rocm-5.6-runtime-22.04`
 
 ##### _CPU_
 - `:pytorch-[pytorch-version]-py[python-version]-ubuntu-[ubuntu-version]`
 
-- `:latest-cpu` &rarr; `:pytorch-2.0.1-py3.10-cpu-22.04` 
+- `:latest-cpu` &rarr; `:pytorch-2.1.1-py3.10-cpu-22.04` 
 
-- `:latest-cpu-jupyter` &rarr; `:jupyter-pytorch-2.0.1-py3.10-cpu-22.04` 
+- `:latest-cpu-jupyter` &rarr; `:jupyter-pytorch-2.1.1-py3.10-cpu-22.04` 
 
 Browse [here](https://github.com/ai-dock/comfyui/pkgs/container/comfyui) for an image suitable for your target environment.
 

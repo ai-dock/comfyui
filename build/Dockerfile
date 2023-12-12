@@ -18,7 +18,7 @@ COPY ./COPY_ROOT/ /
 # Don't put anything heavy in here - We can use multi-stage building above if necessary.
 
 ARG IMAGE_BASE
-RUN /opt/ai-dock/bin/build/layer0/init.sh
+RUN set -eo pipefail && /opt/ai-dock/bin/build/layer0/init.sh | tee /var/log/build.log
 
 ENV OPT_SYNC=ComfyUI:serverless
 ENV MAMBA_DEFAULT_ENV=comfyui
@@ -26,7 +26,7 @@ ENV MAMBA_DEFAULT_RUN="micromamba run -n $MAMBA_DEFAULT_ENV"
 
 # Copy overrides and models into later layers for fast rebuilds
 COPY ./COPY_ROOT_EXTRA/ /
-RUN /opt/ai-dock/bin/build/layer1/init.sh
+RUN set -eo pipefail && /opt/ai-dock/bin/build/layer1/init.sh | tee -a /var/log/build.log
 
 # Keep init.sh as-is and place additional logic in /opt/ai-dock/bin/preflight.sh
 CMD ["init.sh"]
