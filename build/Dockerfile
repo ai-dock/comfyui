@@ -4,12 +4,11 @@ ARG IMAGE_BASE="ghcr.io/ai-dock/pytorch:2.0.1-py3.10-cuda-11.8.0-base-22.04"
 FROM ${IMAGE_BASE}
 
 LABEL org.opencontainers.image.source https://github.com/ai-dock/comfyui
-
 LABEL org.opencontainers.image.description "ComfyUI Stable Diffusion backend and GUI"
-
 LABEL maintainer="Rob Ballantyne <rob@dynamedia.uk>"
 
 ENV IMAGE_SLUG="comfyui"
+ENV OPT_SYNC=ComfyUI:serverless
 
 # Copy early so we can use scripts in the build - Changes to these files will invalidate the cache and cause a rebuild.
 COPY ./COPY_ROOT/ /
@@ -20,7 +19,7 @@ COPY ./COPY_ROOT/ /
 ARG IMAGE_BASE
 RUN set -eo pipefail && /opt/ai-dock/bin/build/layer0/init.sh | tee /var/log/build.log
 
-ENV OPT_SYNC=ComfyUI:serverless
+# Must be set after layer0
 ENV MAMBA_DEFAULT_ENV=comfyui
 ENV MAMBA_DEFAULT_RUN="micromamba run -n $MAMBA_DEFAULT_ENV"
 

@@ -84,9 +84,9 @@ Browse [here](https://github.com/ai-dock/comfyui/pkgs/container/comfyui) for an 
 
 You can also [build from source](#building-images) by editing `.env` and running `docker compose build`.
 
-Supported Python versions: `3.10`
+Supported Python versions: `3.11`, `3.10`
 
-Supported Pytorch versions: `2.0.1`
+Supported Pytorch versions: `2.1.1`, `2.0.1`
 
 Supported Platforms: `NVIDIA CUDA`, `AMD ROCm`, `CPU`
 
