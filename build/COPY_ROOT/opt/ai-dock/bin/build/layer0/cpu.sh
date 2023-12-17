@@ -1,14 +1,11 @@
-#!/bin/bash
+#!/bin/false
 
-# Must exit and fail to build if any command fails
-set -eo pipefail
-
-main() {
-    install_comfyui
+build_cpu_main() {
+    build_cpu_install_comfyui
 }
 
-install_comfyui() {
+build_cpu_install_comfyui() {
     /opt/ai-dock/bin/update-comfyui.sh
 }
 
-main "$@"; exit
+build_cpu_main "$@"

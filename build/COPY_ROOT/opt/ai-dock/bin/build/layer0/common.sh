@@ -1,17 +1,15 @@
-#!/bin/bash
+#!/bin/false
 
-# Must exit and fail to build if any command fails
-set -eo pipefail
-
+source /opt/ai-dock/etc/environment.sh
 comfyui_git="https://github.com/comfyanonymous/ComfyUI"
 
-main() {
-    create_env
-    install_jupyter_kernels
-    clone_comfyui
+build_common_main() {
+    build_common_create_env
+    build_common_install_jupyter_kernels
+    build_common_clone_comfyui
 }
 
-create_env() {
+build_common_create_env() {
     apt-get update
     $APT_INSTALL libgl1 \
         libgoogle-perftools4
@@ -25,15 +23,15 @@ create_env() {
     $MAMBA_CREATE -n comfyui --file "${exported_env}"
     
     # RunPod serverless support
-    $MAMBA_CREATE -n serverless -c defaults python=3.10
+    $MAMBA_CREATE -n serverless python=3.10
     micromamba run -n serverless $PIP_INSTALL \
         runpod
 }
 
 
-install_jupyter_kernels() {
+build_common_install_jupyter_kernels() {
     if [[ $IMAGE_BASE =~ "jupyter-pytorch" ]]; then
-        $MAMBA_INSTALL -n comfyui -c defaults -y \
+        $MAMBA_INSTALL -n comfyui \
             ipykernel \
             ipywidgets
         
@@ -61,9 +59,9 @@ install_jupyter_kernels() {
     fi
 }
 
-clone_comfyui() {
+build_common_clone_comfyui() {
     cd /opt
     git clone ${comfyui_git}
 }
 
-main "$@"; exit
+build_common_main "$@"

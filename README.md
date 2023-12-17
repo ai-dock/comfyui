@@ -302,8 +302,6 @@ You can set startup flags by using variable `COMFYUI_FLAGS`.
 
 To manage this service you can use `supervisorctl [start|stop|restart] comfyui`.
 
->[!NOTE]  
->_If you have enabled `CF_QUICK_TUNNELS` a secure `https://[random-auto-generated-sub-domain].trycloudflare.com` link will be created. You can find it at `/var/log/supervisor/quicktunnel-comfyui.log`_
 
 ### ComfyUI RP API
 
@@ -333,9 +331,6 @@ Jupyter server will listen on port `8888` unless you have specified an alternati
 A python kernel will be installed coresponding with the python version of the image.
 
 Jupyter's official documentation is available at https://jupyter.org/
-
->[!NOTE]  
->_If you have enabled `CF_QUICK_TUNNELS` a secure `https://[random-auto-generated-sub-domain].trycloudflare.com` link will be created. You can find it at `/var/log/supervisor/quicktunnel-jupyter.log`_
 
 ### Caddy
 
@@ -380,6 +375,8 @@ This service allows you to connect to your local services via https without expo
 You can also create a private network to enable remote connecions to the container at its local address (`172.x.x.x`) if your local machine is running a Cloudflare WARP client.
 
 If you do not wish to provide a tunnel token, you could enable `CF_QUICK_TUNNELS` which will create a throwaway tunnel for your web services.
+
+Secure links can be found in the [service portal](#service-portal) and in the log files at `/var/log/supervisor/quicktunnel-*.log`.
 
 Full documentation for Cloudflare tunnels is [here](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/).
 
@@ -485,7 +482,6 @@ Some ports need to be exposed for the services to run or for certain features of
 - Create a [new notebook](https://link.ai-dock.org/console.paperspace.com) with the `Start from Scratch` template.
 - Select `Advanced options`
 - In Container Name enter `ghcr.io/ai-dock/comfyui:latest-jupyter`
-- In Registry Username enter `x` (Paperspace bug)
 - In Command enter `init.sh WORKSPACE=/notebooks PROVISIONING_SCRIPT="https://raw.githubusercontent.com/ai-dock/comfyui/main/config/provisioning/get-models-sd-official.sh" CF_QUICK_TUNNELS=true`
 
 You can use the web UI to do further configuration, or you can supply further environment variables as detailed above.

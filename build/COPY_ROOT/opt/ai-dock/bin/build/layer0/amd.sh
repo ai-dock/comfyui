@@ -1,13 +1,10 @@
-#!/bin/bash
+#!/bin/false
 
-# Must exit and fail to build if any command fails
-set -eo pipefail
-
-main() {
-    install_comfyui
+build_amd_main() {
+    build_amd_install_comfyui
 }
 
-install_comfyui() {
+build_amd_install_comfyui() {
     # Mamba export does not include pip packages.
     # We need to get torch again - todo find a better way?
     micromamba -n comfyui run pip install \
@@ -17,4 +14,4 @@ install_comfyui() {
     /opt/ai-dock/bin/update-comfyui.sh
 }
 
-main "$@"; exit
+build_amd_main "$@"
