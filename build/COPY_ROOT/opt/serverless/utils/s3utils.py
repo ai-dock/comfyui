@@ -13,7 +13,8 @@ class s3utils:
             connect_timeout=self.connect_timeout, 
             retries = dict(
                 max_attempts = self.connect_attempts
-            )
+            ),
+            signature_version = 'v4'
         )
         self.session = boto3.session.Session(
             aws_access_key_id = self.aws_access_key_id,
