@@ -42,6 +42,14 @@ components:
                             type: string
                             required: false
                             description: Alternatively set AWS_BUCKET_NAME environment variable
+                        webhook_url:
+                            type: string
+                            required: false
+                            description: Webhook URL to invoke after a successful run or an error. Alternatively set WEBHOOK_URL environment variable
+                        webhook_extra_params:
+                            type: object
+                            required: false
+                            description: Extra params for webhook request
         RawWorkflow:
             description: Downloads URLs to input directory with no additional processing - Your application must modify the workflow as needed.
             allOf:

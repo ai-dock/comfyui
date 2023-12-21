@@ -36,3 +36,13 @@ class Network:
 
         print(f"Downloaded {url} to {filepath}")
         return filepath
+    
+    @staticmethod
+    def invoke_webhook(url, data):
+        try:
+            response = requests.post(url, json=data)
+            print(f"Invoke webhook {url} with data {data} - status {response.status_code}")
+            return response
+        except requests.exceptions.RequestException as e:
+            print(f"Error making POST request: {e}")
+            return None
