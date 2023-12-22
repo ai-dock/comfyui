@@ -65,6 +65,8 @@ Example Request Body:
         "aws_secret_access_key": "your-s3-secret-access-key",
         "aws_endpoint_url": "https://my-endpoint.backblaze.com",
         "aws_bucket_name": "your-bucket",
+        "webhook_url": "your-webhook-url",
+        "webhook_extra_params": {},
         "steps": 20,
         "ckpt_name": "v1-5-pruned-emaonly.ckpt",
         "sampler_name": "euler",

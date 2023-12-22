@@ -43,7 +43,7 @@ class BaseHandler:
             raise IndexError(f"{key} required but not set")
         elif key not in self.payload:
             return default
-        elif Network.is_url(self.payload[key]) and not key.startswith("aws_"):
+        elif Network.is_url(self.payload[key]) and not (key.startswith("aws_") or key.startswith("webhook_")):
             return self.get_url_content(self.payload[key])
         else:
             return self.payload[key]
@@ -88,6 +88,7 @@ class BaseHandler:
                 time.sleep(0.5)
             
             if not self.is_server_ready():
+                self.invoke_webhook(success=False, error=f"Server not ready after timeout ({timeout}s)")
                 raise requests.RequestException(f"Server not ready after timeout ({timeout}s)")
             
             print ("Posting job to local server...")
@@ -96,12 +97,16 @@ class BaseHandler:
             if "prompt_id" in response:
                 return response["prompt_id"]
             elif "node_errors" in response:
+                self.invoke_webhook(success=False, error=response["node_errors"])
                 raise requests.RequestException(response["node_errors"])
             elif "error" in response:
+                self.invoke_webhook(success=False, error=response["error"])
                 raise requests.RequestException(response["error"])
         except requests.RequestException:
+            self.invoke_webhook(success=False, error="Unknown error")
             raise
         except:
+            self.invoke_webhook(success=False, error="Unknown error")
             raise requests.RequestException("Failed to queue prompt")
     
     def get_job_status(self):
@@ -118,6 +123,7 @@ class BaseHandler:
                 if self.comfyui_job_id in job:
                     return "pending"
         except:
+            self.invoke_webhook(success=False, error="Failed to queue job")
             raise requests.RequestException("Failed to queue job")
     
     def image_to_base64(self, path):
@@ -178,6 +184,25 @@ class BaseHandler:
         settings["connect_attempts"] = 1
         return settings
     
+    def invoke_webhook(self, success = False, result = {}, error = ""):
+        webhook_url = self.get_value("webhook_url", os.environ.get("WEBHOOK_URL"))
+        webhook_extra_params = self.get_value("webhook_extra_params", {})
+
+        if Network.is_url(webhook_url):
+            data = {}
+            data["job_id"] = self.comfyui_job_id
+            data["request_id"] = self.request_id
+            data["success"] = success
+            if result:
+                data["result"] = result
+            if error:
+                data["error"] = error    
+            if webhook_extra_params:
+                data["extra_params"] = webhook_extra_params
+            Network.invoke_webhook(webhook_url, data)
+        else:
+            print("webhook_url is NOT valid!")    
+    
     def handle(self):
         self.comfyui_job_id = self.queue_job(30)
         
@@ -188,4 +213,6 @@ class BaseHandler:
                 print (f"Waiting for {status} job to complete")
                 time.sleep(0.5)
 
-        return self.get_result(self.comfyui_job_id)
+        result = self.get_result(self.comfyui_job_id)
+        self.invoke_webhook(success=True, result=result)
+        return result

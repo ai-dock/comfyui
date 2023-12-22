@@ -61,6 +61,8 @@ Example Request Body:
         "aws_secret_access_key": "your-s3-secret-access-key",
         "aws_endpoint_url": "https://my-endpoint.backblaze.com",
         "aws_bucket_name": "your-bucket",
+        "webhook_url": "your-webhook-url",
+        "webhook_extra_params": {},
         "ckpt_name": "v1-5-pruned-emaonly.ckpt",
         "include_text": "photograph of a victorian woman, arms outstretched with angel wings. cloudy sky, meadow grass",
         "exclude_text": "watermark, text",
