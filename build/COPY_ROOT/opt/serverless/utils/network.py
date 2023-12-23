@@ -2,6 +2,8 @@ from urllib.parse import urlparse
 import requests
 import os
 import uuid
+import hashlib
+from .filesystem import Filesystem
 
 class Network:
     def __init__(self):
@@ -14,23 +16,29 @@ class Network:
         except:
             return False
     
+    @staticmethod
+    def get_url_hash(url):
+        return hashlib.md5((f'{url}').encode()).hexdigest()
+    
     # todo - threads 
     @staticmethod
     def download_file(url, target_dir, request_id):
         try:
+            file_name_hash = Network.get_url_hash(url)
             os.makedirs(target_dir, exist_ok=True)
             response = requests.get(url, timeout=5)
             if response.status_code > 399:
                 raise requests.RequestException(f"Unable to download {url}")
-            if "content-disposition" in response.headers:
-                content_disposition = response.headers["content-disposition"]
-                filename = content_disposition.split("filename=")[1]
-            else:
-                filename = url.split("/")[-1]
-            
-            filepath = f"{target_dir}/{request_id}-{uuid.uuid4()}-{filename}"
-            with open(filepath, mode="wb") as file:
+          
+            filepath_hash = f"{target_dir}/{file_name_hash}"
+            # ignore above
+            with open(filepath_hash, mode="wb") as file:
                 file.write(response.content)
+           
+            file_extension = Filesystem.get_file_extension(filepath_hash)     
+            filepath = f"{filepath_hash}{file_extension}"
+            os.replace(filepath_hash, filepath)
+            
         except:
             raise
 

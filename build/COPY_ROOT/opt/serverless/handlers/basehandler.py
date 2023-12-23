@@ -7,6 +7,7 @@ import base64
 import shutil
 from utils.s3utils import s3utils
 from utils.network import Network
+from utils.filesystem import Filesystem
 
 class BaseHandler:
     ENDPOINT_PROMPT="http://127.0.0.1:18188/prompt"
@@ -66,12 +67,19 @@ class BaseHandler:
         return data
 
     def get_url_content(self, url):
-        return os.path.basename(Network.download_file(
-            url, 
-            self.get_input_dir(), 
-            self.request_id
+        existing_file = Filesystem.find_input_file(
+            self.get_input_dir(),
+            Network.get_url_hash(url)
+        )
+        if existing_file:
+            return os.path.basename(existing_file)
+        else:
+            return os.path.basename(Network.download_file(
+                url, 
+                self.get_input_dir(), 
+                self.request_id
+                    )
                 )
-            )
 
     def is_server_ready(self):
         try:

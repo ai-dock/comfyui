@@ -24,6 +24,8 @@ build_common_create_env() {
     
     # RunPod serverless support
     $MAMBA_CREATE -n serverless python=3.10
+    $MAMBA_INSTALL -n serverless \
+        python-magic
     micromamba run -n serverless $PIP_INSTALL \
         runpod
 }
