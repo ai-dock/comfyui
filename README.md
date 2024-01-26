@@ -4,6 +4,8 @@
 
 Run [ComfyUI](https://github.com/comfyanonymous/ComfyUI) in a docker container locally or in the cloud.
 
+These container images are tested extensively at [Vast.ai](https://link.ai-dock.org/template-vast-comfyui-jupyter) & [Runpod.io](https://link.ai-dock.org/template-runpod-comfyui-jupyter) but compatibility with other GPU cloud services is expected.
+
 >[!NOTE]  
 >These images do not bundle models or third-party configurations. You should use a [provisioning script](#provisioning-script) to automatically configure your container. You can find examples in `config/provisioning`.
 
