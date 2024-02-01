@@ -8,6 +8,7 @@ import shutil
 from utils.s3utils import s3utils
 from utils.network import Network
 from utils.filesystem import Filesystem
+import re
 
 class BaseHandler:
     ENDPOINT_PROMPT="http://127.0.0.1:18188/prompt"
@@ -155,21 +156,11 @@ class BaseHandler:
         for item in outputs:
             if "images" in outputs[item]:
                 for image in outputs[item]["images"]:
-                    original_path = f"{self.OUTPUT_DIR}/{image['subfolder']}/{image['filename']}" \
-                                    if image['subfolder'] \
-                                    else f"{self.OUTPUT_DIR}/{image['filename']}"
-                    new_path = f"{custom_output_dir}/{image['filename']}"
-                    # Handle duplicated request where output file in not re-generated
-                    if os.path.islink(original_path):
-                        shutil.copyfile(os.path.realpath(original_path), new_path)
-                    else:
-                        os.rename(original_path, new_path)
-                        os.symlink(new_path, original_path)
-                    key = f"{self.request_id}/{image['filename']}"
+                    clean_filename = re.sub(r"_temp_[^_]+_", "_", image['filename'])
+                    new_path = f"{custom_output_dir}/{clean_filename}"
+                    key = f"{self.request_id}/{clean_filename}"
                     self.result["images"].append({
                         "local_path": new_path,
-                        #"base64": self.image_to_base64(path),
-                        # make this work first, then threads
                         "url": self.s3utils.file_upload(new_path, key)
                     })
         
