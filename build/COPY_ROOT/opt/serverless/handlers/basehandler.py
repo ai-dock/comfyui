@@ -13,8 +13,8 @@ class BaseHandler:
     ENDPOINT_PROMPT="http://127.0.0.1:18188/prompt"
     ENDPOINT_QUEUE="http://127.0.0.1:18188/queue"
     ENDPOINT_HISTORY="http://127.0.0.1:18188/history"
-    INPUT_DIR=f"{os.environ.get('WORKSPACE')}/ComfyUI/input/"
-    OUTPUT_DIR=f"{os.environ.get('WORKSPACE')}/ComfyUI/output/"
+    INPUT_DIR=f"{os.environ.get('WORKSPACE')}ComfyUI/input"
+    OUTPUT_DIR=f"{os.environ.get('WORKSPACE')}ComfyUI/output"
     
     request_id = None
     comfyui_job_id = None
@@ -150,12 +150,14 @@ class BaseHandler:
             "timings": {}
         }
         
-        custom_output_dir = f"{self.OUTPUT_DIR}{self.request_id}"
+        custom_output_dir = f"{self.OUTPUT_DIR}/{self.request_id}"
         os.makedirs(custom_output_dir, exist_ok = True)
         for item in outputs:
             if "images" in outputs[item]:
                 for image in outputs[item]["images"]:
-                    original_path = f"{self.OUTPUT_DIR}{image['subfolder']}/{image['filename']}"
+                    original_path = f"{self.OUTPUT_DIR}/{image['subfolder']}/{image['filename']}" \
+                                    if image['subfolder'] \
+                                    else f"{self.OUTPUT_DIR}/{image['filename']}"
                     new_path = f"{custom_output_dir}/{image['filename']}"
                     # Handle duplicated request where output file in not re-generated
                     if os.path.islink(original_path):

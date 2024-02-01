@@ -3,7 +3,8 @@
 # Use this layer to add nodes and models
 
 NODES=(
-    #"https://github.com/ltdrdata/ComfyUI-Manager"
+    "https://github.com/ltdrdata/ComfyUI-Manager"
+    "https://github.com/ltdrdata/comfyui-impact-pack"
 )
 
 CHECKPOINT_MODELS=(
@@ -19,7 +20,7 @@ LORA_MODELS=(
 
 VAE_MODELS=(
     #"https://huggingface.co/stabilityai/sd-vae-ft-ema-original/resolve/main/vae-ft-ema-560000-ema-pruned.safetensors"
-    #"https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors"
+    "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors"
     #"https://huggingface.co/stabilityai/sdxl-vae/resolve/main/sdxl_vae.safetensors"
 )
 
