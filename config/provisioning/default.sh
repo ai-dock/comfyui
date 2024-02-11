@@ -1,4 +1,4 @@
-#!/bin/false
+#!/bin/bash
 
 # This file will be sourced in init.sh
 
