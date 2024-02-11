@@ -2,6 +2,7 @@
 
 # Must exit and fail to build if any command fails
 set -eo pipefail
+umask 002
 
 source /opt/ai-dock/bin/build/layer0/common.sh
 

@@ -11,19 +11,25 @@ build_common_main() {
 
 build_common_create_env() {
     apt-get update
-    $APT_INSTALL libgl1 \
-        libgoogle-perftools4
+    $APT_INSTALL \
+        libgl1-mesa-glx \
+        libtcmalloc-minimal4
+        #libgoogle-perftools4
 
-    ln -sf $(ldconfig -p | grep -Po "libtcmalloc.so.\d" | head -n 1) \
+    ln -sf $(ldconfig -p | grep -Po "libtcmalloc_minimal.so.\d" | head -n 1) \
         /lib/x86_64-linux-gnu/libtcmalloc.so
-
+        
+    #$MAMBA_INSTALL -n ${MAMBA_DEFAULT_ENV} pocl
+    
     # A new pytorch env costs ~ 300Mb
     exported_env=/tmp/${MAMBA_DEFAULT_ENV}.yaml
     micromamba env export -n ${MAMBA_DEFAULT_ENV} > "${exported_env}"
     $MAMBA_CREATE -n comfyui --file "${exported_env}"
+    printf "/opt/micromamba/envs/comfyui/lib\n" >> /etc/ld.so.conf.d/x86_64-linux-gnu.micromamba.10-comfyui.conf
     
     # RunPod serverless support
     $MAMBA_CREATE -n serverless python=3.10
+    printf "/opt/micromamba/envs/serverless/lib\n" >> /etc/ld.so.conf.d/x86_64-linux-gnu.micromamba.20-serverless.conf
     $MAMBA_INSTALL -n serverless \
         python-magic
     micromamba run -n serverless $PIP_INSTALL \

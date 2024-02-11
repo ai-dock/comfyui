@@ -5,10 +5,13 @@ trap cleanup EXIT
 LISTEN_PORT=${COMFYUI_PORT_LOCAL:-18188}
 METRICS_PORT=${COMFYUI_METRICS_PORT:-28188}
 PROXY_SECURE=true
+QUICKTUNNELS=true
 
 function cleanup() {
     kill $(jobs -p) > /dev/null 2>&1
     rm /run/http_ports/$PROXY_PORT > /dev/null 2>&1
+    fuser -k -SIGTERM ${LISTEN_PORT}/tcp > /dev/null 2>&1 &
+    wait -n
 }
 
 function start() {
@@ -67,14 +70,17 @@ function start() {
     printf "%s started: %s\n" "${SERVICE_NAME}" "$(date +"%x %T.%3N")" >> /var/log/timing_data
     printf "Starting %s...\n" "${SERVICE_NAME}"
     
-    kill $(lsof -t -i:$LISTEN_PORT) > /dev/null 2>&1 &
-    wait -n
+    fuser -k -SIGKILL ${LISTEN_PORT}/tcp > /dev/null 2>&1 &
 
     FLAGS_COMBINED="${PLATFORM_FLAGS} ${BASE_FLAGS} $(cat /etc/comfyui_flags.conf)"
     printf "Starting %s...\n" "${SERVICE_NAME}"
 
     cd /opt/ComfyUI && \
-    micromamba run -n comfyui -e LD_PRELOAD=libtcmalloc.so python main.py \
+    # elevate comfyui libs
+    micromamba run -n comfyui \
+        -e LD_PRELOAD=libtcmalloc.so \
+        -e LD_LIBRARY_PATH=/opt/micromamba/envs/comfyui/lib:${LD_LIBRARY_PATH} \
+        python main.py \
         ${FLAGS_COMBINED} --port ${LISTEN_PORT}
 }
 

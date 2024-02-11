@@ -9,7 +9,6 @@ function cleanup() {
     kill $(jobs -p) > /dev/null 2>&1
 }
 
-
 function start() {
     if [[ ${SERVERLESS,,} = "true" ]]; then
         printf "Refusing to start hosted API service in serverless mode\n"
@@ -18,7 +17,7 @@ function start() {
 
     printf "Starting %s...\n" ${SERVICE_NAME}
     
-    kill $(lsof -t -i:$LISTEN_PORT) > /dev/null 2>&1 &
+    fuser -k -SIGTERM ${LISTEN_PORT}/tcp > /dev/null 2>&1 &
     wait -n
 
     cd /opt/serverless/providers/runpod && \

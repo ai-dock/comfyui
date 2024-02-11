@@ -125,4 +125,6 @@ function build_extra_download() {
     wget -qnc --content-disposition --show-progress -e dotbytes="${3:-4M}" -P "$2" "$1"
 }
 
+umask 002
 build_extra_start
+fix-permissions.sh -o container

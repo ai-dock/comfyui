@@ -9,12 +9,12 @@ env:
   UBUNTU_VERSION: 22.04
   BUILDX_NO_DEFAULT_ATTESTATIONS: 1
   # Conservative defaults for cloud providers
-  LATEST_CUDA: "pytorch-2.1.1-py3.10-cuda-11.8.0-base-22.04"
-  LATEST_CUDA_JUPYTER: "jupyter-pytorch-2.1.1-py3.10-cuda-11.8.0-base-22.04"
-  LATEST_ROCM: "pytorch-2.1.1-py3.10-rocm-5.6-runtime-22.04"
-  LATEST_ROCM_JUPYTER: "jupyter-pytorch-2.1.1-py3.10-rocm-5.6-runtime-22.04"
-  LATEST_CPU: "pytorch-2.1.1-py3.10-cpu-22.04"
-  LATEST_CPU_JUPYTER: "jupyter-pytorch-2.1.1-py3.10-cpu-22.04"
+  LATEST_CUDA: "pytorch-2.2.0-py3.10-cuda-11.8.0-runtime-22.04"
+  LATEST_CUDA_JUPYTER: "jupyter-pytorch-2.2.0-py3.10-cuda-11.8.0-runtime-22.04"
+  LATEST_ROCM: "pytorch-2.2.0-py3.10-rocm-5.7-runtime-22.04"
+  LATEST_ROCM_JUPYTER: "jupyter-pytorch-2.2.0-py3.10-rocm-5.7-runtime-22.04"
+  LATEST_CPU: "pytorch-2.2.0-py3.10-cpu-22.04"
+  LATEST_CPU_JUPYTER: "jupyter-pytorch-2.2.0-py3.10-cpu-22.04"
 
 jobs:
   cpu-base:
@@ -28,17 +28,20 @@ jobs:
         python:
           - "3.10"
         pytorch:
-          - "2.0.1"
           - "2.1.1"
+          - "2.1.2"
+          - "2.2.0"
     steps:
       -
         name: Free Space
         run: |
           df -h
-          rm -rf /usr/share/dotnet
-          rm -rf /opt/ghc
-          rm -rf /usr/local/share/boost
-          rm -rf "$AGENT_TOOLSDIRECTORY"
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/.ghcup
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
           df -h
       -
         name: Env Setter
@@ -91,25 +94,25 @@ jobs:
         python:
           - "3.10"
         pytorch:
-          - "2.0.1"
           - "2.1.1"
+          - "2.1.2"
+          - "2.2.0"
         cuda:
           - "11.8.0"
           - "12.1.0"
         level:
-          - "base"
-        exclude:
-          - cuda: "12.1.0"
-            pytorch: "2.0.1"
+          - "runtime"
     steps:
       -
         name: Free Space
         run: |
           df -h
-          rm -rf /usr/share/dotnet
-          rm -rf /opt/ghc
-          rm -rf /usr/local/share/boost
-          rm -rf "$AGENT_TOOLSDIRECTORY"
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/.ghcup
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
           df -h
       -
         name: Env Setter
@@ -162,28 +165,33 @@ jobs:
         python:
           - "3.10"
         pytorch:
-          - "2.0.1"
           - "2.1.1"
+          - "2.1.2"
+          - "2.2.0"
         rocm:
-          - "5.4.2"
-          - "5.6"
+          - "5.7"
+          - "5.7"
         level:
           - "runtime"
         exclude:
-          - rocm: "5.4.2"
-            pytorch: "2.1.1"
           - rocm: "5.6"
-            pytorch: "2.0.1"
+            pytorch: "2.2.0"
+          - rocm: "5.7"
+            pytorch: "2.1.2"
+          - rocm: "5.7"
+            pytorch: "2.1.1"
             
     steps:
       -
         name: Free Space
         run: |
           df -h
-          rm -rf /usr/share/dotnet
-          rm -rf /opt/ghc
-          rm -rf /usr/local/share/boost
-          rm -rf "$AGENT_TOOLSDIRECTORY"
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/.ghcup
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
           df -h
       -
         name: Env Setter

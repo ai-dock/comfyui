@@ -5,11 +5,11 @@ services:
     build:
       context: ./build
       args:
-        IMAGE_BASE: ${IMAGE_BASE:-ghcr.io/ai-dock/jupyter-pytorch:2.1.1-py3.10-cuda-11.8.0-base-22.04}
+        IMAGE_BASE: ${IMAGE_BASE:-ghcr.io/ai-dock/jupyter-pytorch:2.2.0-py3.10-cuda-11.8.0-runtime-22.04}
       tags:
-        - "ghcr.io/ai-dock/comfyui:${IMAGE_TAG:-jupyter-pytorch-2.1.1-py3.10-cuda-11.8.0-base-22.04}"
+        - "ghcr.io/ai-dock/comfyui:${IMAGE_TAG:-jupyter-pytorch-2.2.0-py3.10-cuda-11.8.0-runtime-22.04}"
         
-    image: ghcr.io/ai-dock/comfyui:${IMAGE_TAG:-jupyter-pytorch-2.1.1-py3.10-cuda-11.8.0-base-22.04}
+    image: ghcr.io/ai-dock/comfyui:${IMAGE_TAG:-jupyter-pytorch-2.2.0-py3.10-cuda-11.8.0-runtime-22.04}
     
     ## For Nvidia GPU's - You probably want to uncomment this
     #deploy:
@@ -20,33 +20,13 @@ services:
     #          count: all
     #          capabilities: [gpu]
     
-    security_opt:
-      ## For Rclone mount
-      - apparmor:unconfined
-      ## For AMD GPU
-      #- seccomp:unconfined
-    
-    cap_add:
-      ## For Rclone mount
-      - SYS_ADMIN
-    
     devices:
-      ## For Rclone mount
-      - "/dev/fuse:/dev/fuse"
+      - "/dev/dri:/dev/dri"
       ## For AMD GPU
       #- "/dev/kfd:/dev/kfd"
-      #- "/dev/dri:/dev/dri"
       
-    ## For AMD GPU
-    #group_add:
-    #  - video
-    #  - render
               
     volumes:
-      ## For Rclone mount
-      - /etc/passwd:/etc/passwd:ro
-      - /etc/group:/etc/group:ro
-      - ./config/rclone:/etc/rclone
       ## Workspace
       - ./workspace:${WORKSPACE:-/workspace/}:rshared
       # You can share /workspace/storage with other non-ComfyUI containers. See README
@@ -58,7 +38,7 @@ services:
       - ./config/provisioning/default.sh:/opt/ai-dock/bin/provisioning.sh
     ports:
         # SSH available on host machine port 2222 to avoid conflict. Change to suit
-        - ${SSH_PORT_HOST:-2222}:${SSH_PORT_LOCAL:-22}
+        - ${SSH_PORT_HOST:-2222}:22
         # Caddy port for service portal
         - ${SERVICEPORTAL_PORT_HOST:-1111}:${SERVICEPORTAL_PORT_HOST:-1111}
         # ComfyUI web interface
@@ -80,15 +60,11 @@ services:
         - WEB_USER=${WEB_USER:-user}
         - WEB_PASSWORD=${WEB_PASSWORD:-password}
         - SSH_PORT_HOST=${SSH_PORT_HOST:-2222}
-        - SSH_PORT_LOCAL=${SSH_PORT_LOCAL:-22}
         - SERVICEPORTAL_PORT_HOST=${SERVICEPORTAL_PORT_HOST:-1111}
-        - SERVICEPORTAL_PORT_LOCAL=${SERVICEPORTAL_PORT_LOCAL:-11111}
         - SERVICEPORTAL_METRICS_PORT=${SERVICEPORTAL_METRICS_PORT:-21111}
         - COMFYUI_FLAGS=${COMFYUI_FLAGS:-}
         - COMFYUI_PORT_HOST=${COMFYUI_PORT_HOST:-8188}
-        - COMFYUI_PORT_LOCAL=${COMFYUI_PORT_LOCAL:-18188}
         - COMFYUI_METRICS_PORT=${COMFYUI_METRICS_PORT:-28188}
         - JUPYTER_PORT_HOST=${JUPYTER_PORT_HOST:-8888}
-        - JUPYTER_PORT_LOCAL=${JUPYTER_PORT_LOCAL:-18888}
         - JUPYTER_METRICS_PORT=${JUPYTER_METRICS_PORT:-28888}
         - SERVERLESS=${SERVERLESS:-false}

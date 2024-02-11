@@ -1,12 +1,37 @@
 :!PROXY_PORT {
-    handle_path /openapi.json {
-        root * /opt/serverless/docs/swagger/openapi.yaml
-        file_server
+    import universal-config
+    
+    @openapi {
+        path /openapi.json
     }
 
-    handle_path /rp-api* {
-        reverse_proxy localhost:38188
+    @rp-api {
+        path /rp-api*
     }
-
-    reverse_proxy localhost:!LISTEN_PORT
+    
+    header @authenticating_bearer Set-Cookie "ai_dock_token={$WEB_TOKEN}; Path=/ ;Max-Age=604800; HttpOnly; SameSite=lax"
+    header @authenticating_basic Set-Cookie "ai_dock_token={$WEB_PASSWORD_B64}; Path=/ ;Max-Age=604800; HttpOnly; SameSite=lax"
+    
+   route @openapi {
+        handle_path /openapi.json {
+            root * /opt/serverless/docs/swagger/openapi.yaml
+            file_server @authorized
+        }
+        redir {$SERVICEPORTAL_LOGIN}
+    }
+    
+    route @rp-api {
+        uri strip_prefix /rp-api
+        reverse_proxy @authorized localhost:38188
+        redir {$SERVICEPORTAL_LOGIN}
+    }
+    
+    route @preauth {
+       redir @authorized /
+    }
+    
+    route @default {
+        reverse_proxy @authorized localhost:!LISTEN_PORT
+        redir {$SERVICEPORTAL_LOGIN}
+    }
 }
