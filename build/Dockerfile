@@ -17,6 +17,17 @@ COPY ./COPY_ROOT/ /
 # Don't put anything heavy in here - We can use multi-stage building above if necessary.
 
 ARG IMAGE_BASE
+RUN sed -i -e 's/\r$//' /opt/ai-dock/bin/build/layer0/init.sh
+RUN sed -i -e 's/\r$//' /opt/ai-dock/bin/build/layer0/common.sh
+RUN sed -i -e 's/\r$//' /opt/ai-dock/bin/build/layer0/nvidia.sh
+RUN sed -i -e 's/\r$//' /opt/ai-dock/bin/build/layer0/clean.sh
+RUN sed -i -e 's/\r$//' /opt/ai-dock/bin/update-comfyui.sh
+RUN sed -i -e 's/\r$//' /opt/ai-dock/bin/preflight.sh
+RUN sed -i -e 's/\r$//' /opt/ai-dock/bin/set-comfyui-flags.sh
+RUN sed -i -e 's/\r$//' /opt/ai-dock/bin/supervisor-comfyui-rp-api.sh
+RUN sed -i -e 's/\r$//' /opt/ai-dock/bin/supervisor-comfyui.sh
+RUN sed -i -e 's/\r$//' /opt/ai-dock/bin/supervisor-serverless.sh
+RUN sed -i -e 's/\r$//' /opt/ai-dock/storage_monitor/etc/mappings.sh
 RUN set -eo pipefail && /opt/ai-dock/bin/build/layer0/init.sh | tee /var/log/build.log
 
 # Must be set after layer0
@@ -25,6 +36,7 @@ ENV MAMBA_DEFAULT_RUN="micromamba run -n $MAMBA_DEFAULT_ENV"
 
 # Copy overrides and models into later layers for fast rebuilds
 COPY ./COPY_ROOT_EXTRA/ /
+RUN sed -i -e 's/\r$//' /opt/ai-dock/bin/build/layer1/init.sh
 RUN set -eo pipefail && /opt/ai-dock/bin/build/layer1/init.sh | tee -a /var/log/build.log
 
 # Keep init.sh as-is and place additional logic in /opt/ai-dock/bin/preflight.sh
