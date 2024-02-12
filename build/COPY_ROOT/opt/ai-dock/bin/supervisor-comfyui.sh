@@ -15,6 +15,7 @@ function cleanup() {
 }
 
 function start() {
+    source /opt/ai-dock/etc/environment.sh
     if [[ ! -v COMFYUI_PORT || -z $COMFYUI_PORT ]]; then
         COMFYUI_PORT=${COMFYUI_PORT_HOST:-8188}
     fi
@@ -44,7 +45,7 @@ function start() {
     if [[ -f /run/workspace_sync || -f /run/container_config ]]; then
         if [[ ${SERVERLESS,,} != "true" ]]; then
             printf "Waiting for workspace sync...\n"
-            kill $(lsof -t -i:$LISTEN_PORT) > /dev/null 2>&1 &
+            fuser -k -SIGKILL ${LISTEN_PORT}/tcp > /dev/null 2>&1 &
             wait -n
             /usr/bin/python3 /opt/ai-dock/fastapi/logviewer/main.py \
                 -p $LISTEN_PORT \
@@ -71,6 +72,7 @@ function start() {
     printf "Starting %s...\n" "${SERVICE_NAME}"
     
     fuser -k -SIGKILL ${LISTEN_PORT}/tcp > /dev/null 2>&1 &
+    wait -n
 
     FLAGS_COMBINED="${PLATFORM_FLAGS} ${BASE_FLAGS} $(cat /etc/comfyui_flags.conf)"
     printf "Starting %s...\n" "${SERVICE_NAME}"

@@ -7,9 +7,12 @@ SERVICE_NAME="RunPod Serverless API"
 
 function cleanup() {
     kill $(jobs -p) > /dev/null 2>&1
+    fuser -k -SIGTERM ${LISTEN_PORT}/tcp > /dev/null 2>&1 &
+    wait -n
 }
 
 function start() {
+    source /opt/ai-dock/etc/environment.sh
     if [[ ${SERVERLESS,,} = "true" ]]; then
         printf "Refusing to start hosted API service in serverless mode\n"
         exec sleep 10
@@ -17,7 +20,7 @@ function start() {
 
     printf "Starting %s...\n" ${SERVICE_NAME}
     
-    fuser -k -SIGTERM ${LISTEN_PORT}/tcp > /dev/null 2>&1 &
+    fuser -k -SIGKILL ${LISTEN_PORT}/tcp > /dev/null 2>&1 &
     wait -n
 
     cd /opt/serverless/providers/runpod && \
