@@ -192,8 +192,12 @@ class BaseHandler:
         settings["connect_attempts"] = 1
         return settings
     
+    # Webhook cannot be mandatory. Quick fix
     def invoke_webhook(self, success = False, result = {}, error = ""):
-        webhook_url = self.get_value("webhook_url", os.environ.get("WEBHOOK_URL"))
+        try:
+            webhook_url = self.get_value("webhook_url", os.environ.get("WEBHOOK_URL"))
+        except:
+            return None
         webhook_extra_params = self.get_value("webhook_extra_params", {})
 
         if Network.is_url(webhook_url):
