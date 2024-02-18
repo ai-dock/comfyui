@@ -11,7 +11,7 @@ ENV IMAGE_SLUG="comfyui"
 ENV OPT_SYNC=ComfyUI:serverless
 
 # Copy early so we can use scripts in the build - Changes to these files will invalidate the cache and cause a rebuild.
-COPY ./COPY_ROOT/ /
+COPY --chown=0:1111 ./COPY_ROOT/ /
 
 # Use build scripts to ensure we can build all targets from one Dockerfile in a single layer.
 # Don't put anything heavy in here - We can use multi-stage building above if necessary.
@@ -24,7 +24,7 @@ ENV MAMBA_DEFAULT_ENV=comfyui
 ENV MAMBA_DEFAULT_RUN="micromamba run -n $MAMBA_DEFAULT_ENV"
 
 # Copy overrides and models into later layers for fast rebuilds
-COPY ./COPY_ROOT_EXTRA/ /
+COPY --chown=0:1111 ./COPY_ROOT_EXTRA/ /
 RUN set -eo pipefail && /opt/ai-dock/bin/build/layer1/init.sh | tee -a /var/log/build.log
 
 # Keep init.sh as-is and place additional logic in /opt/ai-dock/bin/preflight.sh
