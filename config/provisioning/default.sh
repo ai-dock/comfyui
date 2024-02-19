@@ -4,6 +4,11 @@
 
 # https://raw.githubusercontent.com/ai-dock/comfyui/main/config/provisioning/default.sh
 
+# Packages are installed after nodes so we can fix them...
+
+PYTHON_PACKAGES=(
+    #"opencv-python==4.7.0.72"
+)
 
 NODES=(
     "https://github.com/ltdrdata/ComfyUI-Manager"
@@ -60,6 +65,7 @@ function provisioning_start() {
     DISK_GB_ALLOCATED=$(($DISK_GB_AVAILABLE + $DISK_GB_USED))
     provisioning_print_header
     provisioning_get_nodes
+    provisioning_install_python_packages
     provisioning_get_models \
         "${WORKSPACE}/storage/stable_diffusion/models/ckpt" \
         "${CHECKPOINT_MODELS[@]}"
@@ -99,6 +105,12 @@ function provisioning_get_nodes() {
             fi
         fi
     done
+}
+
+function provisioning_install_python_packages() {
+    if [ ${#PYTHON_PACKAGES[@]} -gt 0 ]; then
+        micromamba -n comfyui run ${PIP_INSTALL} ${PYTHON_PACKAGES[*]}
+    fi
 }
 
 function provisioning_get_models() {
