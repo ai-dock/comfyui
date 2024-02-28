@@ -51,6 +51,12 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
       -
+        name: Permissions fixes
+        run: |
+          reponame="$(basename ${GITHUB_REPOSITORY})"
+          target="${HOME}/work/${reponame}/${reponame}/build/COPY*"
+          chmod -R ug+rwX ${target}
+      -
         name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
@@ -121,6 +127,12 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v3
+      -
+        name: Permissions fixes
+        run: |
+          reponame="$(basename ${GITHUB_REPOSITORY})"
+          target="${HOME}/work/${reponame}/${reponame}/build/COPY*"
+          chmod -R ug+rwX ${target}
       -
         name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -200,6 +212,12 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v3
+      -
+        name: Permissions fixes
+        run: |
+          reponame="$(basename ${GITHUB_REPOSITORY})"
+          target="${HOME}/work/${reponame}/${reponame}/build/COPY*"
+          chmod -R ug+rwX ${target}
       -
         name: Login to GitHub Container Registry
         uses: docker/login-action@v2

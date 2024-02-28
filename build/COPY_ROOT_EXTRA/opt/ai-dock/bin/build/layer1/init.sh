@@ -4,7 +4,7 @@
 
 # Packages are installed after nodes so we can fix them...
 PYTHON_PACKAGES=(
-    #"opencv-python==4.7.0.72"
+    "opencv-python==4.7.0.72"
 )
 
 NODES=(

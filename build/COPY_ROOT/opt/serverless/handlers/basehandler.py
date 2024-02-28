@@ -157,7 +157,7 @@ class BaseHandler:
                 for image in outputs[item]["images"]:
                     original_path = f"{self.OUTPUT_DIR}{image['subfolder']}/{image['filename']}"
                     new_path = f"{custom_output_dir}/{image['filename']}"
-                    # Handle duplicated request where output file in not re-generated
+                    # Handle duplicated request where output file is not re-generated
                     if os.path.islink(original_path):
                         shutil.copyfile(os.path.realpath(original_path), new_path)
                     else:
