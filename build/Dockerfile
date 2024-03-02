@@ -3,9 +3,9 @@
 ARG IMAGE_BASE="ghcr.io/ai-dock/pytorch:2.0.1-py3.10-cuda-11.8.0-base-22.04"
 FROM ${IMAGE_BASE}
 
-LABEL org.opencontainers.image.source https://github.com/ai-dock/comfyui
+LABEL org.opencontainers.image.source https://github.com/aadinash/comfyui
 LABEL org.opencontainers.image.description "ComfyUI Stable Diffusion backend and GUI"
-LABEL maintainer="Rob Ballantyne <rob@dynamedia.uk>"
+LABEL maintainer="Aadi Nashikkar <aadinashikkar@gmail.com>"
 
 ENV IMAGE_SLUG="comfyui"
 ENV OPT_SYNC=ComfyUI:serverless
