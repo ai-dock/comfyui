@@ -2,6 +2,7 @@ version: "3.8"
 # Compose file build variables set in .env
 services:
   supervisor:
+    platform: linux/amd64
     build:
       context: ./build
       args:
