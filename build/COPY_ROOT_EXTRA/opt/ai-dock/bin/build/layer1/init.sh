@@ -8,7 +8,12 @@ PYTHON_PACKAGES=(
 )
 
 NODES=(
-    #"https://github.com/ltdrdata/ComfyUI-Manager"
+    "https://github.com/ltdrdata/ComfyUI-Manager"
+    "https://github.com/cubiq/ComfyUI_IPAdapter_plus"
+    "https://github.com/Gourieff/comfyui-reactor-node"
+    "https://github.com/ltdrdata/ComfyUI-Impact-Pack"
+    "https://github.com/Fannovel16/comfyui_controlnet_aux"
+    "https://github.com/Acly/comfyui-tooling-nodes"
 )
 
 CHECKPOINT_MODELS=(
@@ -16,10 +21,13 @@ CHECKPOINT_MODELS=(
     #"https://huggingface.co/stabilityai/stable-diffusion-2-1/resolve/main/v2-1_768-ema-pruned.ckpt"
     #"https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors"
     #"https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sd_xl_refiner_1.0.safetensors"
+    "https://huggingface.co/RunDiffusion/Juggernaut-XL-v8/resolve/main/juggernautXL_v8Rundiffusion.safetensors"
+    "https://huggingface.co/RunDiffusion/Juggernaut-XL-v9/resolve/main/Juggernaut-XL_v9_RunDiffusionPhoto_v2.safetensors"
 )
 
 LORA_MODELS=(
     #"https://civitai.com/api/download/models/16576"
+    "https://huggingface.co/aadinash/lora7/resolve/main/VIBRANTWAVYSWEATER-000006.safetensors"
 )
 
 VAE_MODELS=(
@@ -52,6 +60,15 @@ CONTROLNET_MODELS=(
     #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/t2iadapter_seg-fp16.safetensors"
     #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/t2iadapter_sketch-fp16.safetensors"
     #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/t2iadapter_style-fp16.safetensors"
+    "https://huggingface.co/stabilityai/control-lora/resolve/main/control-LoRAs-rank128/control-lora-depth-rank128.safetensors"
+)
+
+IPADAPTER_MODELS=(
+    "https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/ip-adapter_sdxl_vit-h.safetensors"
+)
+
+CLIP_MODELS=(
+    "https://huggingface.co/h94/IP-Adapter/resolve/main/models/image_encoder/model.safetensors"
 )
 
 ### DO NOT EDIT BELOW HERE UNLESS YOU KNOW WHAT YOU ARE DOING ###
@@ -74,6 +91,12 @@ function build_extra_start() {
     build_extra_get_models \
         "/opt/storage/stable_diffusion/models/esrgan" \
         "${ESRGAN_MODELS[@]}"
+    build_extra_get_models \
+        "/opt/storage/stable_diffusion/models/ipadapter" \
+        "${IPADAPTER_MODELS[@]}"
+    build_extra_get_models \
+        "/opt/storage/stable_diffusion/models/clip_vision" \
+        "${CLIP_MODELS[@]}"
      
     cd /opt/ComfyUI && \
     micromamba run -n comfyui -e LD_PRELOAD=libtcmalloc.so python main.py \
