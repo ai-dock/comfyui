@@ -88,7 +88,7 @@ You can also [build from source](#building-images) by editing `.env` and running
 
 Supported Python versions: `3.11`, `3.10`
 
-Supported Pytorch versions: `2.2.0`, `2.1.2`, `2.1.1`
+Supported Pytorch versions: `2.2.0`, `2.1.2`
 
 Supported Platforms: `NVIDIA CUDA`, `AMD ROCm`, `CPU`
 

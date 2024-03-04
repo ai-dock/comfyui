@@ -28,7 +28,6 @@ jobs:
         python:
           - "3.10"
         pytorch:
-          - "2.1.1"
           - "2.1.2"
           - "2.2.0"
     steps:
@@ -100,7 +99,6 @@ jobs:
         python:
           - "3.10"
         pytorch:
-          - "2.1.1"
           - "2.1.2"
           - "2.2.0"
         cuda:
@@ -177,11 +175,9 @@ jobs:
         python:
           - "3.10"
         pytorch:
-          - "2.1.1"
           - "2.1.2"
           - "2.2.0"
         rocm:
-          - "5.7"
           - "5.7"
         level:
           - "runtime"
@@ -190,8 +186,6 @@ jobs:
             pytorch: "2.2.0"
           - rocm: "5.7"
             pytorch: "2.1.2"
-          - rocm: "5.7"
-            pytorch: "2.1.1"
             
     steps:
       -
