@@ -422,6 +422,10 @@ See [this guide](https://link.ai-dock.org/guide-sshd-do) by DigitalOcean for an 
 >[!NOTE]  
 >_SSHD is included because the end-user should be able to know the version prior to deloyment. Using a providers add-on, if available, does not guarantee this._
 
+### Syncthing
+
+[Syncthing](https://syncthing.net/) is a peer-to-peer continuous file synchronization program which is very useful for efficiently transporting your work files from a local workstation to a remote container instance.  As the files are sync'd in real-time there is no need for a separate download to retrieve the files.
+
 ### Logtail
 
 This script follows and prints the log files for each of the above services to stdout. This allows you to follow the progress of all running services through docker's own logging system.
@@ -442,8 +446,9 @@ Some ports need to be exposed for the services to run or for certain features of
 | `22`                  | SSH server                |
 | `1111`                | Service Portal web UI     |
 | `8188`                | ComfyUI Interface         |
+| `8384`                | Syncthing UI              |
 | `8888`                | Jupyter                   |
-| `53682`               | Rclone interactive config |
+| `22999`               | Syncthing TCP Transport   |
 
 ## Pre-Configured Templates
 

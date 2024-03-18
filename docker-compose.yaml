@@ -46,8 +46,9 @@ services:
         - ${COMFYUI_PORT_HOST:-8188}:${COMFYUI_PORT_HOST:-8188}
         # Jupyter server
         - ${JUPYTER_PORT_HOST:-8888}:${JUPYTER_PORT_HOST:-8888}
-        # Rclone webserver for interactive configuration
-        - ${RCLONE_PORT_HOST:-53682}:${RCLONE_PORT_HOST:-53682}
+        # Syncthing
+        - ${SYNCTHING_UI_PORT_HOST:-8384}:${SYNCTHING_UI_PORT_HOST:-8384}
+        - ${SYNCTHING_TRANSPORT_PORT_HOST:-22999}:${SYNCTHING_TRANSPORT_PORT_HOST:-22999}
    
     environment:
         # Don't enclose values in quotes
@@ -69,3 +70,6 @@ services:
         - JUPYTER_PORT_HOST=${JUPYTER_PORT_HOST:-8888}
         - JUPYTER_METRICS_PORT=${JUPYTER_METRICS_PORT:-28888}
         - SERVERLESS=${SERVERLESS:-false}
+        - SYNCTHING_UI_PORT_HOST=${SYNCTHING_UI_PORT_HOST:-8384}
+        - SYNCTHING_TRANSPORT_PORT_HOST=${SYNCTHING_TRANSPORT_PORT_HOST:-22999}
+        #- PROVISIONING_SCRIPT=${PROVISIONING_SCRIPT:-}
