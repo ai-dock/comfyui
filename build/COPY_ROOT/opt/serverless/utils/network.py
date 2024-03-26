@@ -12,7 +12,8 @@ class Network:
     @staticmethod
     def is_url(value):
         try:
-            return bool(urlparse(value)[0])
+            result = urlparse(value)
+            return all([result.scheme, result.netloc])
         except:
             return False
     
