@@ -53,17 +53,21 @@ Supported Platforms: `NVIDIA CUDA`, `AMD ROCm`, `CPU`
 
 | Variable                 | Description |
 | ------------------------ | ----------- |
-| `COMFYUI_BRANCH`         | ComfyUI branch/commit hash. Defaults to `master` |
+| `AUTO_UPDATE`            | Update ComfyUI on startup (default `true`) |
+| `COMFYUI_BRANCH`         | ComfyUI branch/commit hash (default `master`) |
 | `COMFYUI_FLAGS`          | Startup flags. eg. `--gpu-only --highvram` |
 | `COMFYUI_PORT_HOST`      | ComfyUI interface port (default `8188`) |
+| `COMFYUI_URL`            | Override `$DIRECT_ADDRESS:port` with URL for ComfyUI |
 
-See the base environment variables [here](https://github.com/ai-dock/base-image/wiki/2.0-Environment-Variables).
+See the base environment variables [here](https://github.com/ai-dock/base-image/wiki/2.0-Environment-Variables) for more configuration options.
 
 ### Additional Micromamba Environments
 
 | Environment    | Packages |
 | -------------- | ----------------------------------------- |
 | `comfyui`      | ComfyUI and dependencies |
+
+This micromamba environment will be activated on shell login.
 
 See the base micromamba environments [here](https://github.com/ai-dock/base-image/wiki/1.0-Included-Software#installed-micromamba-environments).
 
