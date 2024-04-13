@@ -1,0 +1,51 @@
+name: Build Env
+
+on:
+ workflow_dispatch:
+
+env:
+  UBUNTU_VERSION: 22.04
+  BUILDX_NO_DEFAULT_ATTESTATIONS: 1
+  # Conservative defaults for cloud providers
+  LATEST_CPU: "newbase-2.2.0-py3.10-cpu-22.04"
+
+jobs:
+  cpu-base:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        var:
+          - {latest: "false", python: "3.10", pytorch: "2.2.0"}
+          - {latest: "true", sha: "abc1234", python: "3.10", pytorch: "2.2.0"}
+    steps:
+      -
+        name: Env Setter
+        run: |
+          echo "PACKAGE_NAME=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
+      -
+        name: Set tags
+        run: |
+          img_path="ghcr.io/${{ env.PACKAGE_NAME }}"
+          echo "Image Path: ${img_path}"
+          if [[ -z '${{ matrix.var.sha }}' ]]; then
+              COMFYUI_SHA="$(curl -fsSL "https://api.github.com/repos/comfyanonymous/ComfyUI/commits/master" | jq -r '.sha[0:7]')"
+          else
+              COMFYUI_SHA="${{ matrix.var.sha }}"
+          fi
+          [ -z "$COMFYUI_SHA" ] && { echo "Error: COMFYUI_SHA is empty. Exiting script." >&2; exit 1; }
+          
+          base_tag="newbase-${{ matrix.var.pytorch }}-py${{ matrix.var.python }}-cpu-${{ env.UBUNTU_VERSION }}"
+          echo "Base Tag: ${base_tag}"
+          sha_tag="${COMFYUI_SHA}-${base_tag}"
+          echo "SHA Tag: ${sha_tag}"
+          TAGS="${img_path}:${sha_tag}"
+          if [[ ${{ matrix.var.latest }} == "true" ]]; then
+              echo "Marking latest"
+              TAGS+=", ${img_path}:latest-cpu, ${img_path}:latest-cpu-jupyter"
+          fi
+          echo "All Tags: ${TAGS}"
+          echo "COMFYUI_SHA=${COMFYUI_SHA}" >> ${GITHUB_ENV}
+          echo "TAGS=${TAGS}" >> ${GITHUB_ENV}
+          # Print envs
+          env
