@@ -17,7 +17,7 @@ jobs:
       matrix:
         build:
           # Undeclared SHA tags with latest commit from master branch
-          - {latest: "false", sha: "719fb2c", python: "3.10", pytorch: "2.2.2"}
+          - {latest: "true", sha: "719fb2c", python: "3.10", pytorch: "2.2.2"}
     steps:
       -
         name: Free Space
@@ -62,7 +62,7 @@ jobs:
             [ -z "$COMFYUI_SHA" ] && { echo "Error: COMFYUI_SHA is empty. Exiting script." >&2; exit 1; }
             echo "COMFYUI_SHA=${COMFYUI_SHA}" >> ${GITHUB_ENV}
 
-            base_tag="newbase-${{ matrix.build.pytorch }}-py${{ matrix.build.python }}-cpu-${{ env.UBUNTU_VERSION }}"
+            base_tag="pytorch-${{ matrix.build.pytorch }}-py${{ matrix.build.python }}-cpu-${{ env.UBUNTU_VERSION }}"
             sha_tag="${base_tag}-${COMFYUI_SHA}"
             TAGS="${img_path}:${sha_tag}"
             if [[ ${{ matrix.build.latest }} == "true" ]]; then
@@ -92,7 +92,7 @@ jobs:
       matrix:
         build:
           # Undeclared SHA tags with latest commit from master branch
-          - {latest: "false", sha: "719fb2c", python: "3.10", pytorch: "2.2.2", cuda: "11.8.0-runtime"}
+          - {latest: "true", sha: "719fb2c", python: "3.10", pytorch: "2.2.2", cuda: "11.8.0-runtime"}
           - {latest: "false", sha: "719fb2c", python: "3.10", pytorch: "2.2.2", cuda: "12.1.0-runtime"}
     steps:
       -
@@ -138,7 +138,7 @@ jobs:
           [ -z "$COMFYUI_SHA" ] && { echo "Error: COMFYUI_SHA is empty. Exiting script." >&2; exit 1; }
           echo "COMFYUI_SHA=${COMFYUI_SHA}" >> ${GITHUB_ENV}
 
-          base_tag="newbase-${{ matrix.build.pytorch }}-py${{ matrix.build.python }}-cuda-${{ matrix.build.cuda }}-${{ env.UBUNTU_VERSION }}"
+          base_tag="pytorch-${{ matrix.build.pytorch }}-py${{ matrix.build.python }}-cuda-${{ matrix.build.cuda }}-${{ env.UBUNTU_VERSION }}"
           sha_tag="${base_tag}-${COMFYUI_SHA}"
           TAGS="${img_path}:${sha_tag}"
           if [[ ${{ matrix.build.latest }} == "true" ]]; then
@@ -167,7 +167,7 @@ jobs:
       matrix:
         build:
           # Undeclared SHA tags with latest commit from master branch
-          - {latest: "false", sha: "719fb2c", python: "3.10", pytorch: "2.2.2", rocm: "5.7-runtime"}
+          - {latest: "true", sha: "719fb2c", python: "3.10", pytorch: "2.2.2", rocm: "5.7-runtime"}
     steps:
       -
         name: Free Space
@@ -212,7 +212,7 @@ jobs:
             [ -z "$COMFYUI_SHA" ] && { echo "Error: COMFYUI_SHA is empty. Exiting script." >&2; exit 1; }
             echo "COMFYUI_SHA=${COMFYUI_SHA}" >> ${GITHUB_ENV}
 
-            base_tag="newbase-${{ matrix.build.pytorch }}-py${{ matrix.build.python }}-rocm-${{ matrix.build.rocm }}-${{ env.UBUNTU_VERSION }}"
+            base_tag="pytorch-${{ matrix.build.pytorch }}-py${{ matrix.build.python }}-rocm-${{ matrix.build.rocm }}-${{ env.UBUNTU_VERSION }}"
             sha_tag="${base_tag}-${COMFYUI_SHA}"
             TAGS="${img_path}:${sha_tag}"
             if [[ ${{ matrix.build.latest }} == "true" ]]; then
