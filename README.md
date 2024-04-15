@@ -100,17 +100,16 @@ To learn more about the serverless API see the [serverless section](#runpod-serv
 
 **Vast.​ai**
 
-- [comfyui:latest](https://link.ai-dock.org/template-vast-comfyui)
+- [comfyui:latest-cuda](https://link.ai-dock.org/template-vast-comfyui)
 
-- [comfyui:latest-jupyter](https://link.ai-dock.org/template-vast-comfyui-jupyter)
+- [comfyui:latest-rocm](https://link.ai-dock.org/template-vast-comfyui-rocm)
 
 ---
 
 **Runpod.​io**
 
-- [comfyui:latest](https://link.ai-dock.org/template-runpod-comfyui)
+- [comfyui:latest-cuda](https://link.ai-dock.org/template-runpod-comfyui)
 
-- [comfyui:latest-jupyter](https://link.ai-dock.org/template-runpod-comfyui-jupyter)
 
 ---
 
