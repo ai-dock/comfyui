@@ -14,7 +14,6 @@ do
     esac
 done
 
-
 printf "Updating ComfyUI (${branch})...\n"
 
 cd /opt/ComfyUI

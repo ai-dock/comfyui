@@ -79,10 +79,8 @@ function start() {
     printf "Starting %s...\n" "${SERVICE_NAME}"
 
     cd /opt/ComfyUI && \
-    # elevate comfyui libs
     micromamba run -n comfyui \
         -e LD_PRELOAD=libtcmalloc.so \
-        -e LD_LIBRARY_PATH=/opt/micromamba/envs/comfyui/lib:${LD_LIBRARY_PATH} \
         python main.py \
         ${FLAGS_COMBINED} --port ${LISTEN_PORT}
 }

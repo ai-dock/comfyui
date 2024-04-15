@@ -82,9 +82,6 @@ function build_extra_start() {
         --port 11404 \
         --disable-auto-launch \
         --quick-test-for-ci
-    
-    # Ensure pytorch hasn't been clobbered
-    $MAMBA_DEFAULT_RUN python /opt/ai-dock/tests/assert-torch-version.py
 }
 
 function build_extra_get_nodes() {

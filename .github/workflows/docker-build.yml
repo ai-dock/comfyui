@@ -2,19 +2,12 @@ name: Docker Build
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ "main" ]
+  #push:
+  #  branches: [ "main" ]
     
 env:
   UBUNTU_VERSION: 22.04
   BUILDX_NO_DEFAULT_ATTESTATIONS: 1
-  # Conservative defaults for cloud providers
-  LATEST_CUDA: "pytorch-2.2.0-py3.10-cuda-11.8.0-runtime-22.04"
-  LATEST_CUDA_JUPYTER: "jupyter-pytorch-2.2.0-py3.10-cuda-11.8.0-runtime-22.04"
-  LATEST_ROCM: "pytorch-2.2.0-py3.10-rocm-5.7-runtime-22.04"
-  LATEST_ROCM_JUPYTER: "jupyter-pytorch-2.2.0-py3.10-rocm-5.7-runtime-22.04"
-  LATEST_CPU: "pytorch-2.2.0-py3.10-cpu-22.04"
-  LATEST_CPU_JUPYTER: "jupyter-pytorch-2.2.0-py3.10-cpu-22.04"
 
 jobs:
   cpu-base:
@@ -22,14 +15,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        base:
-          - "pytorch"
-          - "jupyter-pytorch"
-        python:
-          - "3.10"
-        pytorch:
-          - "2.1.2"
-          - "2.2.0"
+        build:
+          # Undeclared SHA tags with latest commit from master branch
+          - {latest: "false", sha: "719fb2c", python: "3.10", pytorch: "2.2.1"}
     steps:
       -
         name: Free Space
@@ -65,24 +53,31 @@ jobs:
       -
         name: Set tags
         run: |
-          img_path="ghcr.io/${{ env.PACKAGE_NAME }}"
-          ver_tag="${{ matrix.base }}-${{ matrix.pytorch }}-py${{ matrix.python }}-cpu-${{ env.UBUNTU_VERSION }}"
-          
-          if [[ $ver_tag == ${{ env.LATEST_CPU }} ]]; then
-              TAGS="${img_path}:latest-cpu, ${img_path}:$ver_tag"
-          elif [[ $ver_tag == ${{ env.LATEST_CPU_JUPYTER }} ]]; then
-              TAGS="${img_path}:latest-cpu-jupyter, ${img_path}:$ver_tag"
-          else
-              TAGS="${img_path}:$ver_tag"
-          fi
-          echo "TAGS=${TAGS}" >> ${GITHUB_ENV}
+            img_path="ghcr.io/${{ env.PACKAGE_NAME }}"
+            if [[ -z '${{ matrix.build.sha }}' ]]; then
+                COMFYUI_SHA="$(curl -fsSL "https://api.github.com/repos/comfyanonymous/ComfyUI/commits/master" | jq -r '.sha[0:7]')"
+            else
+                COMFYUI_SHA="${{ matrix.build.sha }}"
+            fi
+            [ -z "$COMFYUI_SHA" ] && { echo "Error: COMFYUI_SHA is empty. Exiting script." >&2; exit 1; }
+            
+            base_tag="newbase-${{ matrix.build.pytorch }}-py${{ matrix.build.python }}-cpu-${{ env.UBUNTU_VERSION }}"
+            sha_tag="${base_tag}-${COMFYUI_SHA}"
+            TAGS="${img_path}:${sha_tag}"
+            if [[ ${{ matrix.build.latest }} == "true" ]]; then
+                echo "Marking latest"
+                TAGS+=", ${img_path}:latest-cpu, ${img_path}:latest-cpu-jupyter"
+            fi
       -
         name: Build and push
         uses: docker/build-push-action@v4
         with:
           context: build
           build-args: |
-            IMAGE_BASE=ghcr.io/ai-dock/${{ matrix.base }}:${{ matrix.pytorch }}-py${{ matrix.python }}-cpu-${{ env.UBUNTU_VERSION }}
+            IMAGE_BASE=ghcr.io/ai-dock/python:${{ matrix.build.python }}-cpu-${{ env.UBUNTU_VERSION }}
+            PYTHON_VERSION=${{ matrix.build.python }}
+            PYTORCH_VERSION=${{ matrix.build.pytorch }}
+            COMFYUI_SHA={{ env.COMFYUI_SHA }}
           push: true
           # Avoids unknown/unknown architecture and extra metadata
           provenance: false
@@ -93,19 +88,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        base:
-          - "pytorch"
-          - "jupyter-pytorch"
-        python:
-          - "3.10"
-        pytorch:
-          - "2.1.2"
-          - "2.2.0"
-        cuda:
-          - "11.8.0"
-          - "12.1.0"
-        level:
-          - "runtime"
+        build:
+          # Undeclared SHA tags with latest commit from master branch
+          - {latest: "false", sha: "719fb2c", python: "3.10", pytorch: "2.2.1", cuda: "11.8.0-runtime"}
+          - {latest: "false", sha: "719fb2c", python: "3.10", pytorch: "2.2.1", cuda: "12.1.0-runtime"}
     steps:
       -
         name: Free Space
@@ -142,24 +128,30 @@ jobs:
         name: Set tags
         run: |
           img_path="ghcr.io/${{ env.PACKAGE_NAME }}"
-          ver_tag="${{ matrix.base }}-${{ matrix.pytorch }}-py${{ matrix.python }}-cuda-${{ matrix.cuda }}-${{ matrix.level }}-${{ env.UBUNTU_VERSION }}"
-          
-          if [[ $ver_tag == ${{ env.LATEST_CUDA }} ]]; then
-              TAGS="${img_path}:latest, ${img_path}:latest-cuda, ${img_path}:$ver_tag"
-          elif [[ $ver_tag == ${{ env.LATEST_CUDA_JUPYTER }} ]]; then
-              TAGS="${img_path}:latest-jupyter, ${img_path}:latest-cuda-jupyter, ${img_path}:$ver_tag"
+          if [[ -z '${{ matrix.build.sha }}' ]]; then
+              COMFYUI_SHA="$(curl -fsSL "https://api.github.com/repos/comfyanonymous/ComfyUI/commits/master" | jq -r '.sha[0:7]')"
           else
-              TAGS="${img_path}:$ver_tag"
+              COMFYUI_SHA="${{ matrix.build.sha }}"
           fi
-          echo "TAGS=${TAGS}" >> ${GITHUB_ENV}
+          [ -z "$COMFYUI_SHA" ] && { echo "Error: COMFYUI_SHA is empty. Exiting script." >&2; exit 1; }
+          
+          base_tag="newbase-${{ matrix.build.pytorch }}-py${{ matrix.build.python }}-cuda-${{ matrix.build.cuda }}-${{ env.UBUNTU_VERSION }}"
+          sha_tag="${base_tag}-${COMFYUI_SHA}"
+          TAGS="${img_path}:${sha_tag}"
+          if [[ ${{ matrix.build.latest }} == "true" ]]; then
+              echo "Marking latest"
+              TAGS+=", ${img_path}:latest, ${img_path}:latest-jupyter, ${img_path}:latest-cuda, ${img_path}:latest-cuda-jupyter"
+          fi
       -
         name: Build and push
         uses: docker/build-push-action@v4
         with:
           context: build
           build-args: |
-            IMAGE_BASE=ghcr.io/ai-dock/${{ matrix.base }}:${{ matrix.pytorch }}-py${{ matrix.python }}-cuda-${{ matrix.cuda }}-${{ matrix.level }}-${{ env.UBUNTU_VERSION }}
-            PYTORCH_VERSION=${{ matrix.pytorch }}
+            IMAGE_BASE="ghcr.io/ai-dock/python:${{ matrix.build.python }}-cuda-${{ matrix.build.cuda }}-${{ env.UBUNTU_VERSION }}"
+            PYTHON_VERSION=${{ matrix.build.python }}
+            PYTORCH_VERSION=${{ matrix.build.pytorch }}
+            COMFYUI_SHA={{ env.COMFYUI_SHA }}
           push: true
           provenance: false
           tags: ${{ env.TAGS }}
@@ -169,24 +161,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        base:
-          - "pytorch"
-          - "jupyter-pytorch"
-        python:
-          - "3.10"
-        pytorch:
-          - "2.1.2"
-          - "2.2.0"
-        rocm:
-          - "5.7"
-        level:
-          - "runtime"
-        exclude:
-          - rocm: "5.6"
-            pytorch: "2.2.0"
-          - rocm: "5.7"
-            pytorch: "2.1.2"
-            
+        build:
+          # Undeclared SHA tags with latest commit from master branch
+          - {latest: "false", sha: "719fb2c", python: "3.10", pytorch: "2.2.1", rocm: "5.7-runtime"}
     steps:
       -
         name: Free Space
@@ -222,24 +199,31 @@ jobs:
       -
         name: Set tags
         run: |
-          img_path="ghcr.io/${{ env.PACKAGE_NAME }}"
-          ver_tag="${{ matrix.base }}-${{ matrix.pytorch }}-py${{ matrix.python }}-rocm-${{ matrix.rocm }}-${{ matrix.level }}-${{ env.UBUNTU_VERSION }}"
-          
-          if [[ $ver_tag == ${{ env.LATEST_ROCM }} ]]; then
-              TAGS="${img_path}:latest-rocm, ${img_path}:$ver_tag"
-          elif [[ $ver_tag == ${{ env.LATEST_ROCM_JUPYTER }} ]]; then
-              TAGS="${img_path}:latest-rocm-jupyter, ${img_path}:$ver_tag"
-          else
-              TAGS="${img_path}:$ver_tag"
-          fi
-          echo "TAGS=${TAGS}" >> ${GITHUB_ENV}
+            img_path="ghcr.io/${{ env.PACKAGE_NAME }}"
+            if [[ -z '${{ matrix.build.sha }}' ]]; then
+                COMFYUI_SHA="$(curl -fsSL "https://api.github.com/repos/comfyanonymous/ComfyUI/commits/master" | jq -r '.sha[0:7]')"
+            else
+                COMFYUI_SHA="${{ matrix.build.sha }}"
+            fi
+            [ -z "$COMFYUI_SHA" ] && { echo "Error: COMFYUI_SHA is empty. Exiting script." >&2; exit 1; }
+            
+            base_tag="newbase-${{ matrix.build.pytorch }}-py${{ matrix.build.python }}-rocm-${{ matrix.build.rocm }}-${{ env.UBUNTU_VERSION }}"
+            sha_tag="${base_tag}-${COMFYUI_SHA}"
+            TAGS="${img_path}:${sha_tag}"
+            if [[ ${{ matrix.build.latest }} == "true" ]]; then
+                echo "Marking latest"
+                TAGS+=", ${img_path}:latest-rocm, ${img_path}:latest-rocm-jupyter"
+            fi
       -
         name: Build and push
         uses: docker/build-push-action@v4
         with:
           context: build
           build-args: |
-            IMAGE_BASE=ghcr.io/ai-dock/${{ matrix.base }}:${{ matrix.pytorch }}-py${{ matrix.python }}-rocm-${{ matrix.rocm }}-${{ matrix.level }}-${{ env.UBUNTU_VERSION }}
+            IMAGE_BASE=ghcr.io/ai-dock/python:${{ matrix.build.python }}-rocm-${{ matrix.build.rocm }}-${{ env.UBUNTU_VERSION }}
+            PYTHON_VERSION=${{ matrix.build.python }}
+            PYTORCH_VERSION=${{ matrix.build.pytorch }}
+            COMFYUI_SHA={{ env.COMFYUI_SHA }}
           push: true
           provenance: false
           tags: ${{ env.TAGS }}

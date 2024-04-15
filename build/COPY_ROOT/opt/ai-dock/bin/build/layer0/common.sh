@@ -1,12 +1,10 @@
 #!/bin/false
 
 source /opt/ai-dock/etc/environment.sh
-comfyui_git="https://github.com/comfyanonymous/ComfyUI"
 
 build_common_main() {
     build_common_create_env
     build_common_install_jupyter_kernels
-    build_common_clone_comfyui
 }
 
 build_common_create_env() {
@@ -14,35 +12,35 @@ build_common_create_env() {
     $APT_INSTALL \
         libgl1-mesa-glx \
         libtcmalloc-minimal4
-        #libgoogle-perftools4
 
     ln -sf $(ldconfig -p | grep -Po "libtcmalloc_minimal.so.\d" | head -n 1) \
         /lib/x86_64-linux-gnu/libtcmalloc.so
-        
-    #$MAMBA_INSTALL -n ${MAMBA_DEFAULT_ENV} pocl
     
-    # A new pytorch env costs ~ 300Mb
-    exported_env=/tmp/${MAMBA_DEFAULT_ENV}.yaml
-    micromamba env export -n ${MAMBA_DEFAULT_ENV} > "${exported_env}"
-    $MAMBA_CREATE -n comfyui --file "${exported_env}"
-    printf "/opt/micromamba/envs/comfyui/lib\n" >> /etc/ld.so.conf.d/x86_64-linux-gnu.micromamba.10-comfyui.conf
-    
+    micromamba create -n comfyui
+    micromamba run -n comfyui mamba-skel
+    micromamba install -n comfyui -y \
+        python="${PYTHON_VERSION}" \
+        ipykernel \
+        ipywidgets \
+        nano
+    micromamba run -n comfyui install-pytorch -v "$PYTORCH_VERSION"
+
     # RunPod serverless support
-    $MAMBA_CREATE -n serverless python=3.10
-    printf "/opt/micromamba/envs/serverless/lib\n" >> /etc/ld.so.conf.d/x86_64-linux-gnu.micromamba.20-serverless.conf
-    $MAMBA_INSTALL -n serverless \
-        python-magic
+    micromamba create -n serverless 
+    micromamba run -n serverless mamba-skel
+    micromamba install -n serverless \
+        python=3.10 \
+        python-magic \
+        ipykernel \
+        ipywidgets \
+        nano
     micromamba run -n serverless $PIP_INSTALL \
         runpod
 }
 
 
 build_common_install_jupyter_kernels() {
-    if [[ $IMAGE_BASE =~ "jupyter-pytorch" ]]; then
-        $MAMBA_INSTALL -n comfyui \
-            ipykernel \
-            ipywidgets
-        
+    if [[ $IMAGE_BASE =~ "jupyter-pytorch" ]]; then        
         kernel_path=/usr/local/share/jupyter/kernels
         
         # Add the often-present "Python3 (ipykernel) as a comfyui alias"
@@ -67,9 +65,28 @@ build_common_install_jupyter_kernels() {
     fi
 }
 
-build_common_clone_comfyui() {
+build_common_install_comfyui() {
+    # Set git SHA to latest if not provided
+    if [[ -z $COMFYUI_SHA ]]; then
+        export COMFYUI_SHA="$(curl -fsSL "https://api.github.com/repos/comfyanonymous/ComfyUI/commits/master" \
+        | jq -r '.sha[0:7]')"
+        env-store COMFYUI_SHA
+    fi
+
     cd /opt
-    git clone ${comfyui_git}
+    git clone https://github.com/comfyanonymous/ComfyUI
+    cd /opt/ComfyUI
+    git checkout "$COMFYUI_SHA"
+
+    micromamba run -n comfyui ${PIP_INSTALL} -r requirements.txt
+}
+
+build_common_run_tests() {
+    installed_pytorch_version=$(micromamba run -n comfyui python -c "import torch; print(torch.__version__)")
+    if [[ "$installed_pytorch_version" != "$PYTORCH_VERSION"* ]]; then
+        echo "Expected PyTorch ${PYTORCH_VERSION} but found ${installed_pytorch_version}\n"
+        exit 1
+    fi
 }
 
 build_common_main "$@"

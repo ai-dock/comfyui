@@ -15,30 +15,19 @@ Common features and options are documented in the [base wiki](https://github.com
 
 #### Version Tags
 
-The `:latest` tag points to `:latest-cuda`
+The `:latest` tag points to `:latest-cuda` and will relate to a stable and tested version.  There may be more recent builds
 
 Tags follow these patterns:
 
 ##### _CUDA_
-- `:pytorch-[pytorch-version]-py[python-version]-cuda-[x.x.x]-base-[ubuntu-version]`
-
-- `:latest-cuda` &rarr; `:pytorch-2.2.0-py3.10-cuda-11.8.0-base-22.04`
-
-- `:latest-cuda-jupyter` &rarr; `:jupyter-pytorch-2.2.0-py3.10-cuda-11.8.0-base-22.04`
+- `:pytorch-[pytorch-version]-py[python-version]-cuda-[x.x.x-base/runtime]-[ubuntu-version]-[comfyui-sha]`
 
 ##### _ROCm_
-- `:pytorch-[pytorch-version]-py[python-version]-rocm-[x.x.x]-runtime-[ubuntu-version]`
-
-- `:latest-rocm` &rarr; `:pytorch-2.2.0-py3.10-rocm-5.7-runtime-22.04`
-
-- `:latest-rocm-jupyter` &rarr; `:jupyter-pytorch-2.2.0-py3.10-rocm-5.7-runtime-22.04`
+- `:pytorch-[pytorch-version]-py[python-version]-rocm-[x.x.x-runtime]-[ubuntu-version]-[comfyui-sha]`
 
 ##### _CPU_
-- `:pytorch-[pytorch-version]-py[python-version]-ubuntu-[ubuntu-version]`
+- `:pytorch-[pytorch-version]-py[python-version]-ubuntu-[ubuntu-version]-[comfyui-sha]`
 
-- `:latest-cpu` &rarr; `:pytorch-2.2.0-py3.10-cpu-22.04` 
-
-- `:latest-cpu-jupyter` &rarr; `:jupyter-pytorch-2.2.0-py3.10-cpu-22.04` 
 
 Browse [here](https://github.com/ai-dock/comfyui/pkgs/container/comfyui) for an image suitable for your target environment.
 
@@ -54,7 +43,7 @@ Supported Platforms: `NVIDIA CUDA`, `AMD ROCm`, `CPU`
 | Variable                 | Description |
 | ------------------------ | ----------- |
 | `AUTO_UPDATE`            | Update ComfyUI on startup (default `true`) |
-| `COMFYUI_BRANCH`         | ComfyUI branch/commit hash (default `master`) |
+| `COMFYUI_BRANCH`         | ComfyUI branch/commit hash for auto update (default `master`) |
 | `COMFYUI_FLAGS`          | Startup flags. eg. `--gpu-only --highvram` |
 | `COMFYUI_PORT_HOST`      | ComfyUI interface port (default `8188`) |
 | `COMFYUI_URL`            | Override `$DIRECT_ADDRESS:port` with URL for ComfyUI |
@@ -204,6 +193,5 @@ These handlers demonstrate how you can create a simple endpoint which will requi
 You can find example payloads for these handlers [here](https://github.com/ai-dock/comfyui/tree/main/build/COPY_ROOT/opt/serverless/docs/example_payloads)
 
 ---
-
 
 _The author ([@robballantyne](https://github.com/robballantyne)) may be compensated if you sign up to services linked in this document. Testing multiple variants of GPU images in many different environments is both costly and time-consuming; This helps to offset costs_

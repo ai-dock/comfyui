@@ -17,6 +17,4 @@ else
     exit 1
 fi
 
-$MAMBA_DEFAULT_RUN python /opt/ai-dock/tests/assert-torch-version.py
-
 source /opt/ai-dock/bin/build/layer0/clean.sh
