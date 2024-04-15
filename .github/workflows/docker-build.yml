@@ -61,7 +61,7 @@ jobs:
             fi
             [ -z "$COMFYUI_SHA" ] && { echo "Error: COMFYUI_SHA is empty. Exiting script." >&2; exit 1; }
             echo "COMFYUI_SHA=${COMFYUI_SHA}" >> ${GITHUB_ENV}
-            
+
             base_tag="newbase-${{ matrix.build.pytorch }}-py${{ matrix.build.python }}-cpu-${{ env.UBUNTU_VERSION }}"
             sha_tag="${base_tag}-${COMFYUI_SHA}"
             TAGS="${img_path}:${sha_tag}"
@@ -152,7 +152,7 @@ jobs:
         with:
           context: build
           build-args: |
-            IMAGE_BASE="ghcr.io/ai-dock/python:${{ matrix.build.python }}-cuda-${{ matrix.build.cuda }}-${{ env.UBUNTU_VERSION }}"
+            IMAGE_BASE=ghcr.io/ai-dock/python:${{ matrix.build.python }}-cuda-${{ matrix.build.cuda }}-${{ env.UBUNTU_VERSION }}
             PYTHON_VERSION=${{ matrix.build.python }}
             PYTORCH_VERSION=${{ matrix.build.pytorch }}
             COMFYUI_SHA=${{ env.COMFYUI_SHA }}
