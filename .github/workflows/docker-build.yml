@@ -17,7 +17,9 @@ jobs:
       matrix:
         build:
           # Undeclared SHA tags with latest commit from master branch
+          # Only building periodic sha tagged images
           - {latest: "true", sha: "719fb2c", python: "3.10", pytorch: "2.2.2"}
+          - {latest: "false", sha: "719fb2c", python: "3.10", pytorch: "2.2.2"}
     steps:
       -
         name: Free Space
@@ -62,12 +64,14 @@ jobs:
             [ -z "$COMFYUI_SHA" ] && { echo "Error: COMFYUI_SHA is empty. Exiting script." >&2; exit 1; }
             echo "COMFYUI_SHA=${COMFYUI_SHA}" >> ${GITHUB_ENV}
 
-            base_tag="pytorch-${{ matrix.build.pytorch }}-py${{ matrix.build.python }}-cpu-${{ env.UBUNTU_VERSION }}"
-            sha_tag="${base_tag}-${COMFYUI_SHA}"
-            TAGS="${img_path}:${sha_tag}"
+            base_tag="cpu-${{ env.UBUNTU_VERSION }}"
+
+            # Latest tags OR sha - Not both
             if [[ ${{ matrix.build.latest }} == "true" ]]; then
                 echo "Marking latest"
-                TAGS+=", ${img_path}:latest-cpu, ${img_path}:latest-cpu-jupyter"
+                TAGS="${img_path}:${base_tag}, ${img_path}:latest-cpu, ${img_path}:latest-cpu-jupyter"
+            else
+                TAGS="${img_path}:${base_tag}-${COMFYUI_SHA}"
             fi
             echo "TAGS=${TAGS}" >> ${GITHUB_ENV}
       -
@@ -92,7 +96,9 @@ jobs:
       matrix:
         build:
           # Undeclared SHA tags with latest commit from master branch
+          # Only building periodic sha tagged images
           - {latest: "true", sha: "719fb2c", python: "3.10", pytorch: "2.2.2", cuda: "11.8.0-runtime"}
+          - {latest: "false", sha: "719fb2c", python: "3.10", pytorch: "2.2.2", cuda: "11.8.0-runtime"}
           - {latest: "false", sha: "719fb2c", python: "3.10", pytorch: "2.2.2", cuda: "12.1.0-runtime"}
     steps:
       -
@@ -138,12 +144,14 @@ jobs:
           [ -z "$COMFYUI_SHA" ] && { echo "Error: COMFYUI_SHA is empty. Exiting script." >&2; exit 1; }
           echo "COMFYUI_SHA=${COMFYUI_SHA}" >> ${GITHUB_ENV}
 
-          base_tag="pytorch-${{ matrix.build.pytorch }}-py${{ matrix.build.python }}-cuda-${{ matrix.build.cuda }}-${{ env.UBUNTU_VERSION }}"
-          sha_tag="${base_tag}-${COMFYUI_SHA}"
-          TAGS="${img_path}:${sha_tag}"
+          base_tag="cuda-${{ matrix.build.cuda }}-${{ env.UBUNTU_VERSION }}"
+
+          # Latest tags OR sha - Not both
           if [[ ${{ matrix.build.latest }} == "true" ]]; then
               echo "Marking latest"
-              TAGS+=", ${img_path}:latest, ${img_path}:latest-jupyter, ${img_path}:latest-cuda, ${img_path}:latest-cuda-jupyter"
+              TAGS="${img_path}:${base_tag}, ${img_path}:latest, ${img_path}:latest-jupyter, ${img_path}:latest-cuda, ${img_path}:latest-cuda-jupyter"
+          else
+              TAGS="${img_path}:${base_tag}-${COMFYUI_SHA}"
           fi
           echo "TAGS=${TAGS}" >> ${GITHUB_ENV}
       -
@@ -167,7 +175,9 @@ jobs:
       matrix:
         build:
           # Undeclared SHA tags with latest commit from master branch
+          # Only building periodic sha tagged images
           - {latest: "true", sha: "719fb2c", python: "3.10", pytorch: "2.2.2", rocm: "5.7-runtime"}
+          - {latest: "false", sha: "719fb2c", python: "3.10", pytorch: "2.2.2", rocm: "5.7-runtime"}
     steps:
       -
         name: Free Space
@@ -212,12 +222,14 @@ jobs:
             [ -z "$COMFYUI_SHA" ] && { echo "Error: COMFYUI_SHA is empty. Exiting script." >&2; exit 1; }
             echo "COMFYUI_SHA=${COMFYUI_SHA}" >> ${GITHUB_ENV}
 
-            base_tag="pytorch-${{ matrix.build.pytorch }}-py${{ matrix.build.python }}-rocm-${{ matrix.build.rocm }}-${{ env.UBUNTU_VERSION }}"
-            sha_tag="${base_tag}-${COMFYUI_SHA}"
-            TAGS="${img_path}:${sha_tag}"
+            base_tag="rocm-${{ matrix.build.rocm }}-${{ env.UBUNTU_VERSION }}"
+
+            # Latest tags OR sha - Not both
             if [[ ${{ matrix.build.latest }} == "true" ]]; then
                 echo "Marking latest"
-                TAGS+=", ${img_path}:latest-rocm, ${img_path}:latest-rocm-jupyter"
+                TAGS="${img_path}:${base_tag}, ${img_path}:latest-rocm, ${img_path}:latest-rocm-jupyter"
+            else
+                TAGS="${img_path}:${base_tag}-${COMFYUI_SHA}"
             fi
             echo "TAGS=${TAGS}" >> ${GITHUB_ENV}
       -
