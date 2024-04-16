@@ -133,7 +133,7 @@ If passed in the payload these variables should be in lowercase.
 
 Incorrect or unset s3 credentials will not resut in job failure. You can still retrieve your images from the network volume.
 
-When used in serverless mode, the container will skip provisioning and will not update ComfyUI or the nodes on start so you must either ensure everyting you need is built into the image (see [Building Images](#building-images)) or first run the container with a network volume in GPU Cloud to get everything set up before launching your workers.
+When used in serverless mode, the container will skip provisioning and will not update ComfyUI or the nodes on start so you must either ensure everyting you need is built into the image (see [Building the Image](https://github.com/ai-dock/base-image/wiki/5.0-Building-the-Image)) or first run the container with a network volume in GPU Cloud to get everything set up before launching your workers.
 
 After launching a serverless worker, any instances of the container launched on the network volume in GPU cloud will also skip auto-updating. All updates must be done manually.
 
