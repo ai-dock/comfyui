@@ -155,6 +155,8 @@ class BaseHandler:
         for item in outputs:
             if "images" in outputs[item]:
                 for image in outputs[item]["images"]:
+                    if "type" in image and image["type"] == "temp":
+                        continue
                     original_path = f"{self.OUTPUT_DIR}{image['subfolder']}/{image['filename']}"
                     new_path = f"{custom_output_dir}/{image['filename']}"
                     # Handle duplicated request where output file is not re-generated
