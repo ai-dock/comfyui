@@ -40,29 +40,27 @@ build_common_create_env() {
 
 
 build_common_install_jupyter_kernels() {
-    if [[ $IMAGE_BASE =~ "jupyter-pytorch" ]]; then        
-        kernel_path=/usr/local/share/jupyter/kernels
-        
-        # Add the often-present "Python3 (ipykernel) as a comfyui alias"
-        rm -rf ${kernel_path}/python3
-        dir="${kernel_path}/python3"
-        file="${dir}/kernel.json"
-        cp -rf ${kernel_path}/../_template ${dir}
-        sed -i 's/DISPLAY_NAME/'"Python3 (ipykernel)"'/g' ${file}
-        sed -i 's/PYTHON_MAMBA_NAME/'"comfyui"'/g' ${file}
-        
-        dir="${kernel_path}/comfyui"
-        file="${dir}/kernel.json"
-        cp -rf ${kernel_path}/../_template ${dir}
-        sed -i 's/DISPLAY_NAME/'"ComfyUI"'/g' ${file}
-        sed -i 's/PYTHON_MAMBA_NAME/'"comfyui"'/g' ${file}
-        
-        dir="${kernel_path}/serverless"
-        file="${dir}/kernel.json"
-        cp -rf ${kernel_path}/../_template ${dir}
-        sed -i 's/DISPLAY_NAME/'"Serverless"'/g' ${file}
-        sed -i 's/PYTHON_MAMBA_NAME/'"serverless"'/g' ${file}
-    fi
+    kernel_path=/usr/local/share/jupyter/kernels
+    
+    # Add the often-present "Python3 (ipykernel) as a comfyui alias"
+    rm -rf ${kernel_path}/python3
+    dir="${kernel_path}/python3"
+    file="${dir}/kernel.json"
+    cp -rf ${kernel_path}/../_template ${dir}
+    sed -i 's/DISPLAY_NAME/'"Python3 (ipykernel)"'/g' ${file}
+    sed -i 's/PYTHON_MAMBA_NAME/'"comfyui"'/g' ${file}
+    
+    dir="${kernel_path}/comfyui"
+    file="${dir}/kernel.json"
+    cp -rf ${kernel_path}/../_template ${dir}
+    sed -i 's/DISPLAY_NAME/'"ComfyUI"'/g' ${file}
+    sed -i 's/PYTHON_MAMBA_NAME/'"comfyui"'/g' ${file}
+    
+    dir="${kernel_path}/serverless"
+    file="${dir}/kernel.json"
+    cp -rf ${kernel_path}/../_template ${dir}
+    sed -i 's/DISPLAY_NAME/'"Serverless"'/g' ${file}
+    sed -i 's/PYTHON_MAMBA_NAME/'"serverless"'/g' ${file}
 }
 
 build_common_install_comfyui() {
