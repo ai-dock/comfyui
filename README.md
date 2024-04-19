@@ -20,20 +20,17 @@ The `:latest` tag points to `:latest-cuda` and will relate to a stable and teste
 Tags follow these patterns:
 
 ##### _CUDA_
-- `:pytorch-[pytorch-version]-py[python-version]-cuda-[x.x.x-base/runtime]-[ubuntu-version]-[comfyui-sha]`
+- `:cuda-[x.x.x-base|runtime]-[ubuntu-version]`
 
 ##### _ROCm_
-- `:pytorch-[pytorch-version]-py[python-version]-rocm-[x.x.x-runtime]-[ubuntu-version]-[comfyui-sha]`
+- `:rocm-[x.x.x-runtime]-[ubuntu-version]`
 
 ##### _CPU_
-- `:pytorch-[pytorch-version]-py[python-version]-ubuntu-[ubuntu-version]-[comfyui-sha]`
+- `:cpu-[ubuntu-version]`
 
 
 Browse [here](https://github.com/ai-dock/comfyui/pkgs/container/comfyui) for an image suitable for your target environment.
 
-Supported Python versions: `3.11`, `3.10`
-
-Supported Pytorch versions: `2.2.0`, `2.1.2`
 
 Supported Platforms: `NVIDIA CUDA`, `AMD ROCm`, `CPU`
 
@@ -42,7 +39,7 @@ Supported Platforms: `NVIDIA CUDA`, `AMD ROCm`, `CPU`
 
 | Variable                 | Description |
 | ------------------------ | ----------- |
-| `AUTO_UPDATE`            | Update ComfyUI on startup (default `true`) |
+| `AUTO_UPDATE`            | Update ComfyUI on startup (default `false`) |
 | `COMFYUI_BRANCH`         | ComfyUI branch/commit hash for auto update (default `master`) |
 | `COMFYUI_FLAGS`          | Startup flags. eg. `--gpu-only --highvram` |
 | `COMFYUI_PORT_HOST`      | ComfyUI interface port (default `8188`) |
