@@ -13,8 +13,8 @@ class BaseHandler:
     ENDPOINT_PROMPT="http://127.0.0.1:18188/prompt"
     ENDPOINT_QUEUE="http://127.0.0.1:18188/queue"
     ENDPOINT_HISTORY="http://127.0.0.1:18188/history"
-    INPUT_DIR=f"{os.environ.get('WORKSPACE')}/ComfyUI/input/"
-    OUTPUT_DIR=f"{os.environ.get('WORKSPACE')}/ComfyUI/output/"
+    INPUT_DIR=f"/opt/ComfyUI/input/"
+    OUTPUT_DIR=f"/opt/ComfyUI/output/"
     
     request_id = None
     comfyui_job_id = None
