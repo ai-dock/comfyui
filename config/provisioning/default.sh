@@ -93,9 +93,11 @@ function provisioning_get_nodes() {
             if [[ ${AUTO_UPDATE,,} != "false" ]]; then
                 printf "Updating node: %s...\n" "${repo}"
                 ( cd "$path" && git pull )
-                if [[ -e $requirements ]]; then
-                    micromamba -n comfyui run ${PIP_INSTALL} -r "$requirements"
-                fi
+            fi
+
+            printf "Ensuring node requirements: %s...\n" "${repo}"
+            if [[ -e $requirements ]]; then
+                micromamba -n comfyui run ${PIP_INSTALL} -r "$requirements"
             fi
         else
             printf "Downloading node: %s...\n" "${repo}"
