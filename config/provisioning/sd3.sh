@@ -2,9 +2,14 @@
 
 # This file will be sourced in init.sh
 
-# https://raw.githubusercontent.com/ai-dock/comfyui/main/config/provisioning/default.sh
+# https://raw.githubusercontent.com/ai-dock/comfyui/main/config/provisioning/sd3.sh
 
 # Packages are installed after nodes so we can fix them...
+
+if [ -z "${HF_TOKEN}" ]; then
+    echo "HF_TOKEN is not set. Exiting."
+    exit 1
+fi
 
 PYTHON_PACKAGES=(
     #"opencv-python==4.7.0.72"
@@ -15,10 +20,7 @@ NODES=(
 )
 
 CHECKPOINT_MODELS=(
-    "https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.ckpt"
-    #"https://huggingface.co/stabilityai/stable-diffusion-2-1/resolve/main/v2-1_768-ema-pruned.ckpt"
-    #"https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors"
-    #"https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sd_xl_refiner_1.0.safetensors"
+    "https://huggingface.co/stabilityai/stable-diffusion-3-medium/resolve/main/sd3_medium_incl_clips_t5xxlfp16.safetensors"
 )
 
 LORA_MODELS=(
@@ -124,7 +126,7 @@ function provisioning_get_models() {
         printf "WARNING: Low disk space allocation - Only the first model will be downloaded!\n"
         arr=("$1")
     fi
-    
+
     printf "Downloading %s model(s) to %s...\n" "${#arr[@]}" "$dir"
     for url in "${arr[@]}"; do
         printf "Downloading: %s\n" "${url}"
@@ -146,7 +148,7 @@ function provisioning_print_end() {
 
 # Download from $1 URL to $2 file path
 function provisioning_download() {
-    wget -qnc --content-disposition --show-progress -e dotbytes="${3:-4M}" -P "$2" "$1"
+    wget --header="Authorization: Bearer $HF_TOKEN" -qnc --content-disposition --show-progress -e dotbytes="${3:-4M}" -P "$2" "$1"
 }
 
 provisioning_start

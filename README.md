@@ -34,6 +34,13 @@ Browse [here](https://github.com/ai-dock/comfyui/pkgs/container/comfyui) for an 
 
 Supported Platforms: `NVIDIA CUDA`, `AMD ROCm`, `CPU`
 
+## Required Environment Variables For Stable Diffusion 3
+
+If you are using the Stable Diffusion 3 provisioning-script(sd3.sh), you must set the following variable(s)
+
+| Variable   | Description                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `HF_TOKEN` | Your Hugging Face API key(must be either a write or read token). This is needed to download Stable Diffiusion 3 as it is a gated model |
 
 ## Additional Environment Variables
 
