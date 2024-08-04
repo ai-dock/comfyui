@@ -20,7 +20,7 @@ NODES=(
 )
 
 CHECKPOINT_MODELS=(
-    "https://huggingface.co/black-forest-labs/FLUX.1-dev/blob/main/flux1-dev.sft"
+    "https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/flux1-dev.sft"
 )
 
 LORA_MODELS=(
@@ -28,15 +28,15 @@ LORA_MODELS=(
 )
 
 VAE_MODELS=(
-    "https://huggingface.co/black-forest-labs/FLUX.1-schnell/blob/main/ae.sft"
+    "https://huggingface.co/black-forest-labs/FLUX.1-schnell/resolve/main/ae.sft"
 )
 
 CLIP_MODELS=(
-    "https://huggingface.co/comfyanonymous/flux_text_encoders/blob/main/t5xxl_fp16.safetensors",
-    "https://huggingface.co/comfyanonymous/flux_text_encoders/blob/main/clip_l.safetensors",
+    "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp16.safetensors",
+    "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors",
     # use fp8 for vram lower than 32gb
     # more info: https://comfyanonymous.github.io/ComfyUI_examples/flux/#simple-to-use-fp8-checkpoint-version
-    "https://huggingface.co/comfyanonymous/flux_text_encoders/blob/main/t5xxl_fp8_e4m3fn.safetensors"
+    "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp8_e4m3fn.safetensors"
 )
 
 ESRGAN_MODELS=(
