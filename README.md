@@ -4,8 +4,8 @@
 
 Run [ComfyUI](https://github.com/comfyanonymous/ComfyUI) in a cloud-first AI-Dock container.
 
->[!NOTE]
->These images do not bundle models or third-party configurations. You should use a [provisioning script](https://github.com/ai-dock/base-image/wiki/4.0-Running-the-Image#provisioning-script) to automatically configure your container. You can find examples in `config/provisioning`.
+> [!NOTE]
+> These images do not bundle models or third-party configurations. You should use a [provisioning script](https://github.com/ai-dock/base-image/wiki/4.0-Running-the-Image#provisioning-script) to automatically configure your container. You can find examples in `config/provisioning`.
 
 ## Documentation
 
@@ -15,50 +15,51 @@ Common features and options are documented in the [base wiki](https://github.com
 
 #### Version Tags
 
-The `:latest` tag points to `:latest-cuda` and will relate to a stable and tested version.  There may be more recent builds
+The `:latest` tag points to `:latest-cuda` and will relate to a stable and tested version. There may be more recent builds
 
 Tags follow these patterns:
 
 ##### _CUDA_
+
 - `:cuda-[x.x.x-base|runtime]-[ubuntu-version]`
 
 ##### _ROCm_
+
 - `:rocm-[x.x.x-runtime]-[ubuntu-version]`
 
 ##### _CPU_
-- `:cpu-[ubuntu-version]`
 
+- `:cpu-[ubuntu-version]`
 
 Browse [here](https://github.com/ai-dock/comfyui/pkgs/container/comfyui) for an image suitable for your target environment.
 
-
 Supported Platforms: `NVIDIA CUDA`, `AMD ROCm`, `CPU`
 
-## Required Environment Variables For Stable Diffusion 3
+## Required Environment Variables For Stable Diffusion 3 and Flux
 
-If you are using the Stable Diffusion 3 provisioning-script(sd3.sh), you must set the following variable(s)
+If you are using the Stable Diffusion 3 (`sd3.sh`) or Flux.1 Dev (`flux1-dev.sh`) provisioning scripts, you must set the following variable(s)
 
-| Variable   | Description                                                                                                                            |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `HF_TOKEN` | Your Hugging Face API key(must be either a write or read token). This is needed to download Stable Diffiusion 3 as it is a gated model |
+| Variable   | Description                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `HF_TOKEN` | Your Hugging Face API key(must be either a write or read token). This is needed to download gated models (Stable Diffusion 3 / Flux) |
 
 ## Additional Environment Variables
 
-| Variable                 | Description |
-| ------------------------ | ----------- |
-| `AUTO_UPDATE`            | Update ComfyUI on startup (default `false`) |
-| `COMFYUI_BRANCH`         | ComfyUI branch/commit hash for auto update (default `master`) |
-| `COMFYUI_FLAGS`          | Startup flags. eg. `--gpu-only --highvram` |
-| `COMFYUI_PORT_HOST`      | ComfyUI interface port (default `8188`) |
-| `COMFYUI_URL`            | Override `$DIRECT_ADDRESS:port` with URL for ComfyUI |
+| Variable            | Description                                                   |
+| ------------------- | ------------------------------------------------------------- |
+| `AUTO_UPDATE`       | Update ComfyUI on startup (default `false`)                   |
+| `COMFYUI_BRANCH`    | ComfyUI branch/commit hash for auto update (default `master`) |
+| `COMFYUI_FLAGS`     | Startup flags. eg. `--gpu-only --highvram`                    |
+| `COMFYUI_PORT_HOST` | ComfyUI interface port (default `8188`)                       |
+| `COMFYUI_URL`       | Override `$DIRECT_ADDRESS:port` with URL for ComfyUI          |
 
 See the base environment variables [here](https://github.com/ai-dock/base-image/wiki/2.0-Environment-Variables) for more configuration options.
 
 ### Additional Micromamba Environments
 
-| Environment    | Packages |
-| -------------- | ----------------------------------------- |
-| `comfyui`      | ComfyUI and dependencies |
+| Environment | Packages                 |
+| ----------- | ------------------------ |
+| `comfyui`   | ComfyUI and dependencies |
 
 This micromamba environment will be activated on shell login.
 
@@ -78,7 +79,6 @@ You can set startup flags by using variable `COMFYUI_FLAGS`.
 
 To manage this service you can use `supervisorctl [start|stop|restart] comfyui`.
 
-
 ### ComfyUI RP API
 
 This service is available on port `8188` and is used to test the [RunPod serverless](https://link.ai-dock.org/runpod-serverless) API.
@@ -97,8 +97,8 @@ To learn more about the serverless API see the [serverless section](#runpod-serv
     <img src="https://raw.githubusercontent.com/ai-dock/comfyui/main/.github/images/api1.png">
 </details>
 
->[!NOTE]
->All services are password protected by default. See the [security](https://github.com/ai-dock/base-image/wiki#security) and [environment variables](https://github.com/ai-dock/base-image/wiki/2.0-Environment-Variables) documentation for more information.
+> [!NOTE]
+> All services are password protected by default. See the [security](https://github.com/ai-dock/base-image/wiki#security) and [environment variables](https://github.com/ai-dock/base-image/wiki/2.0-Environment-Variables) documentation for more information.
 
 ## Pre-Configured Templates
 
@@ -114,12 +114,11 @@ To learn more about the serverless API see the [serverless section](#runpod-serv
 
 - [comfyui:latest-cuda](https://link.ai-dock.org/template-runpod-comfyui)
 
-
 ---
 
 ## RunPod Serverless
 
-The container can be used as a [RunPod serverless](https://link.ai-dock.org/runpod-serverless) worker.  To enable serverless mode you must run the container with environment variables `SERVERLESS=true` and `WORKSPACE=/runpod-volume`.
+The container can be used as a [RunPod serverless](https://link.ai-dock.org/runpod-serverless) worker. To enable serverless mode you must run the container with environment variables `SERVERLESS=true` and `WORKSPACE=/runpod-volume`.
 
 The handlers will accept a job, process it and upload your images to s3 compatible storage.
 
@@ -149,7 +148,7 @@ The API can use multiple handlers which you may define in the payload. Three han
 
 ### Handler: RawWorkflow
 
-This handler should be passed a full ComfyUI workflow in the payload.  It will detect any URL's and download the files into the input directory before replacing the URL value with the local path of the resource.  This is very useful when working with image to image and controlnets.
+This handler should be passed a full ComfyUI workflow in the payload. It will detect any URL's and download the files into the input directory before replacing the URL value with the local path of the resource. This is very useful when working with image to image and controlnets.
 
 This is the most flexible of all handlers.
 
@@ -160,7 +159,6 @@ This is the most flexible of all handlers.
     <br>
     <a target="_blank" href="https://raw.githubusercontent.com/ai-dock/comfyui/main/build/COPY_ROOT/opt/serverless/docs/example_payloads/raw_controlnet_t2i_adapters.json">Example payload</a>
 </details>
-
 
 ### Handler: Text2Image
 
@@ -181,7 +179,7 @@ You can define several overrides to modify the workflow before processing.
 
 This is a basic handler that is bound to a static workflow file (`/opt/serverless/workflows/image2image.json`).
 
-You can define several overrides to modify the workflow before processing. 
+You can define several overrides to modify the workflow before processing.
 
 <details>
   <summary>Image2Image schema</summary>
