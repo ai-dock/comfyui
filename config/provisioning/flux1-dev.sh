@@ -20,6 +20,9 @@ NODES=(
 )
 
 CHECKPOINT_MODELS=(
+)
+
+UNET_MODELS=(
     "https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/flux1-dev.sft"
 )
 
@@ -77,6 +80,9 @@ function provisioning_start() {
     provisioning_get_models \
         "${WORKSPACE}/storage/stable_diffusion/models/ckpt" \
         "${CHECKPOINT_MODELS[@]}"
+    provisioning_get_models \
+        "${WORKSPACE}/storage/stable_diffusion/models/unet" \
+        "${UNET_MODELS[@]}"
     provisioning_get_models \
         "${WORKSPACE}/storage/stable_diffusion/models/lora" \
         "${LORA_MODELS[@]}"
