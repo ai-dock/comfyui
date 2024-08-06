@@ -43,7 +43,7 @@ function start() {
         PLATFORM_FLAGS="--cpu"
     fi
     
-    BASE_FLAGS="--listen 127.0.0.1 --disable-auto-launch"
+    BASE_FLAGS="--disable-auto-launch"
     
     # Delay launch until venv is ready
     if [[ -f /run/workspace_sync || -f /run/container_config ]]; then
