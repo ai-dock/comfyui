@@ -6,6 +6,8 @@
 
 # Packages are installed after nodes so we can fix them...
 
+DEFAULT_WORKFLOW="https://raw.githubusercontent.com/ai-dock/comfyui/main/config/workflows/flux-comfyui-example.json"
+
 APT_PACKAGES=(
     #"package-1"
     #"package-2"
@@ -33,11 +35,6 @@ UNET_MODELS=(
 
 VAE_MODELS=(
 )
-
-workflow_json=$(curl -s https://raw.githubusercontent.com/ai-dock/comfyui/main/config/workflows/flux-comfyui-example.json)
-echo "export const defaultGraph = $workflow_json;" > /opt/ComfyUI/web/scripts/defaultGraph.js
-
-
 
 if [[ -n $HF_TOKEN ]]; then
     UNET_MODELS+=("https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/flux1-dev.safetensors")
@@ -73,6 +70,7 @@ function provisioning_start() {
 
     provisioning_print_header
     provisioning_get_apt_packages
+    provisioning_get_default_workflow
     provisioning_get_nodes
     provisioning_get_pip_packages
     provisioning_get_models \
@@ -90,6 +88,9 @@ function provisioning_start() {
     provisioning_get_models \
         "${WORKSPACE}/storage/stable_diffusion/models/vae" \
         "${VAE_MODELS[@]}"
+    provisioning_get_models \
+        "${WORKSPACE}/storage/stable_diffusion/models/clip" \
+        "${CLIP_MODELS[@]}"
     provisioning_get_models \
         "${WORKSPACE}/storage/stable_diffusion/models/esrgan" \
         "${ESRGAN_MODELS[@]}"
@@ -139,6 +140,14 @@ function provisioning_get_nodes() {
     done
 }
 
+function provisioning_get_default_workflow() {
+    if [[ -n $DEFAULT_WORKFLOW ]]; then
+        workflow_json=$(curl -s "$DEFAULT_WORKFLOW")
+        if [[ -n $workflow_json ]]; then
+            echo "export const defaultGraph = $workflow_json;" > /opt/ComfyUI/web/scripts/defaultGraph.js
+        fi
+    fi
+}
 
 function provisioning_get_models() {
     if [[ -z $2 ]]; then return 1; fi
