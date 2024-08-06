@@ -1,0 +1,43 @@
+{
+    "input": {
+        "handler": "RawWorkflow",
+        "s3": {
+            "access_key_id": "your-s3-access-key",
+            "secret_access_key": "your-s3-secret-access-key",
+            "endpoint_url": "https://my-endpoint.backblaze.com",
+            "bucket_name": "your-bucket"
+        },
+        "webhook": {
+            "webhook_url": "your-webhook-url",
+            "webhook_extra_params": {}
+        },
+        "modifiers": {
+            
+        },
+        "workflow_json": {
+            "9": {
+                "inputs": {
+                    "filename_prefix": "ComfyUI",
+                    "images": [
+                        "10",
+                        0
+                    ]
+                },
+                "class_type": "SaveImage",
+                "_meta": {
+                    "title": "Save Image"
+                }
+            },
+            "10": {
+                "inputs": {
+                    "image": "https://raw.githubusercontent.com/comfyanonymous/ComfyUI/master/input/example.png",
+                    "upload": "image"
+                },
+                "class_type": "LoadImage",
+                "_meta": {
+                    "title": "Load Image"
+                }
+            }
+        }
+    }
+}

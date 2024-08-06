@@ -7,14 +7,14 @@ services:
       context: ./build
       args:
         PYTHON_VERSION: ${PYTHON_VERSION:-3.10}
-        PYTORCH_VERSION: ${PYTORCH_VERSION:-2.2.2}
+        PYTORCH_VERSION: ${PYTORCH_VERSION:-2.3.0}
         COMFYUI_SHA: ${COMFYUI_SHA:-}
         # Base on Python image which is base + python + jupyter
-        IMAGE_BASE: ${IMAGE_BASE:-ghcr.io/ai-dock/python:${PYTHON_VERSION:-3.10}-cuda-11.8.0-runtime-22.04}
+        IMAGE_BASE: ${IMAGE_BASE:-ghcr.io/ai-dock/python:${PYTHON_VERSION:-3.10}-v2-cuda-12.1.1-base-22.04}
       tags:
-        - "ghcr.io/ai-dock/comfyui:${IMAGE_TAG:-pytorch-${PYTORCH_VERSION:-2.2.2}-py3.10-cuda-11.8.0-runtime-22.04}"
+        - "ghcr.io/ai-dock/comfyui:${IMAGE_TAG:-pytorch-${PYTORCH_VERSION:-2.3.0}-py3.10-cuda-12.1.1-base-22.04}"
         
-    image: ghcr.io/ai-dock/comfyui:${IMAGE_TAG:-pytorch-${PYTORCH_VERSION:-2.2.2}-py3.10-cuda-11.8.0-runtime-22.04}
+    image: ghcr.io/ai-dock/comfyui:${IMAGE_TAG:-pytorch-${PYTORCH_VERSION:-2.3.0}-py3.10-cuda-12.1.1-base-22.04}
     
     ## For Nvidia GPU's - You probably want to uncomment this
     #deploy:
@@ -41,6 +41,8 @@ services:
       # Avoids changing local file owner
       - ./config/authorized_keys:/root/.ssh/authorized_keys_mount
       - ./config/provisioning/default.sh:/opt/ai-dock/bin/provisioning.sh
+      # In-container development
+      - ./build/COPY_ROOT_1/opt/ai-dock/api-wrapper:/opt/ai-dock/api-wrapper
     ports:
         # SSH available on host machine port 2222 to avoid conflict. Change to suit
         - ${SSH_PORT_HOST:-2222}:22
@@ -63,7 +65,10 @@ services:
         - WORKSPACE_SYNC=${WORKSPACE_SYNC:-false}
         - CF_TUNNEL_TOKEN=${CF_TUNNEL_TOKEN:-}
         - CF_QUICK_TUNNELS=${CF_QUICK_TUNNELS:-true}
+        - CIVITAI_TOKEN=${CIVITAI_TOKEN:-}
+        - HF_TOKEN=${HF_TOKEN:-}
         - WEB_ENABLE_AUTH=${WEB_ENABLE_AUTH:-true}
+        - WEB_ENABLE_HTTPS=${WEB_ENABLE_HTTPS:-true}
         - WEB_USER=${WEB_USER:-user}
         - WEB_PASSWORD=${WEB_PASSWORD:-password}
         - SSH_PORT_HOST=${SSH_PORT_HOST:-2222}

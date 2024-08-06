@@ -1,0 +1,25 @@
+:!PROXY_PORT {
+    import universal-config
+
+    @ai-dock-api {
+        path /ai-dock/api/*
+    }
+    
+    header @authenticating_bearer Set-Cookie "ai_dock_token={$WEB_TOKEN}; Path=/ ;Max-Age=604800; HttpOnly; SameSite=lax"
+    header @authenticating_basic Set-Cookie "ai_dock_token={$WEB_PASSWORD_B64}; Path=/ ;Max-Age=604800; HttpOnly; SameSite=lax"
+    
+    route @ai-dock-api {
+        uri strip_prefix /ai-dock/api
+        reverse_proxy @authorized localhost:38188
+        redir {$SERVICEPORTAL_LOGIN}
+    }
+    
+    route @preauth {
+       redir @authorized /
+    }
+    
+    route @default {
+        reverse_proxy @authorized localhost:!LISTEN_PORT
+        redir {$SERVICEPORTAL_LOGIN}
+    }
+}
