@@ -36,7 +36,7 @@ UNET_MODELS=(
 VAE_MODELS=(
 )
 
-if [[ -n $HF_TOKEN ]]; then
+if provisioning_has_valid_hf_token; then
     UNET_MODELS+=("https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/flux1-dev.safetensors")
     VAE_MODELS+=("https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/ae.safetensors")
 else
@@ -173,6 +173,38 @@ function provisioning_print_header() {
 
 function provisioning_print_end() {
     printf "\nProvisioning complete:  Web UI will start now\n\n"
+}
+
+function provisioning_has_valid_hf_token() {
+    [[ -n "$HF_TOKEN" ]] || return 1
+    url="https://huggingface.co/api/whoami-v2"
+
+    response=$(curl -o /dev/null -s -w "%{http_code}" -X GET "$url" \
+        -H "Authorization: Bearer $HF_TOKEN" \
+        -H "Content-Type: application/json")
+
+    # Check if the token is valid
+    if [ "$response" -eq 200 ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+function provisioning_has_valid_civitai_token() {
+    [[ -n "$CIVITAI_TOKEN" ]] || return 1
+    url="https://civitai.com/api/v1/models?hidden=1&limit=1"
+
+    response=$(curl -o /dev/null -s -w "%{http_code}" -X GET "$url" \
+        -H "Authorization: Bearer $HF_TOKEN" \
+        -H "Content-Type: application/json")
+
+    # Check if the token is valid
+    if [ "$response" -eq 200 ]; then
+        return 0
+    else
+        return 1
+    fi
 }
 
 # Download from $1 URL to $2 file path

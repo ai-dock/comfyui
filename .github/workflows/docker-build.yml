@@ -18,7 +18,7 @@ jobs:
         build:
           # Undeclared SHA tags with latest commit from master branch
           # Only building periodic sha tagged images
-          - {latest: "false", sha: "de17a97", python: "3.10", pytorch: "2.3.1"}
+          - {latest: "true", sha: "de17a97", python: "3.10", pytorch: "2.3.1"}
     steps:
       -
         name: Free Space
@@ -102,7 +102,7 @@ jobs:
         build:
           # Undeclared SHA tags with latest commit from master branch
           # Only building periodic sha tagged images
-          - {latest: "false", sha: "de17a97", python: "3.10", pytorch: "2.3.1", cuda: "12.1.1-base"}
+          - {latest: "true", sha: "de17a97", python: "3.10", pytorch: "2.3.1", cuda: "12.1.1-base"}
     steps:
       -
         name: Free Space
@@ -189,7 +189,7 @@ jobs:
         build:
           # Undeclared SHA tags with latest commit from master branch
           # Only building periodic sha tagged images
-          - {latest: "false", sha: "de17a97", python: "3.10", pytorch: "2.3.1", rocm: "6.0-runtime"}
+          - {latest: "true", sha: "de17a97", python: "3.10", pytorch: "2.3.1", rocm: "6.0-runtime"}
     steps:
       -
         name: Free Space
