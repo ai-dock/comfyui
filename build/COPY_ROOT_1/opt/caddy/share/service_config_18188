@@ -5,8 +5,8 @@
         path /ai-dock/api/*
     }
     
-    header @authenticating_bearer Set-Cookie "ai_dock_token={$WEB_TOKEN}; Path=/ ;Max-Age=604800; HttpOnly; SameSite=lax"
-    header @authenticating_basic Set-Cookie "ai_dock_token={$WEB_PASSWORD_B64}; Path=/ ;Max-Age=604800; HttpOnly; SameSite=lax"
+    header @authenticating_bearer Set-Cookie "{$CADDY_AUTH_COOKIE_NAME}={$WEB_TOKEN}; Path=/ ;Max-Age=604800; HttpOnly; SameSite=lax"
+    header @authenticating_basic Set-Cookie "{$CADDY_AUTH_COOKIE_NAME}={$WEB_PASSWORD_B64}; Path=/ ;Max-Age=604800; HttpOnly; SameSite=lax"
     
     route @ai-dock-api {
         uri strip_prefix /ai-dock/api
