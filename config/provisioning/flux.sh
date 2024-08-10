@@ -195,7 +195,7 @@ function provisioning_has_valid_civitai_token() {
     url="https://civitai.com/api/v1/models?hidden=1&limit=1"
 
     response=$(curl -o /dev/null -s -w "%{http_code}" -X GET "$url" \
-        -H "Authorization: Bearer $HF_TOKEN" \
+        -H "Authorization: Bearer $CIVITAI_TOKEN" \
         -H "Content-Type: application/json")
 
     # Check if the token is valid
