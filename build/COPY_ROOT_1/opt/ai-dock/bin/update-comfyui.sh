@@ -1,24 +1,31 @@
 #!/bin/bash
+umask 002
 
-branch=master
+source /opt/ai-dock/bin/venv-set.sh comfyui
 
-if [[ -n "${COMFYUI_BRANCH}" ]]; then
-    branch="${COMFYUI_BRANCH}"
+if [[ -n "${COMFYUI_REF}" ]]; then
+    ref="${COMFYUI_REF}"
+else
+    # The latest tagged release
+    ref="$(curl -s https://api.github.com/repos/comfyanonymous/ComfyUI/tags | \
+            jq -r '.[0].name')"
 fi
 
-# -b flag has priority
-while getopts b: flag
+# -r argument has priority
+while getopts r: flag
 do
     case "${flag}" in
-        b) branch="$OPTARG";;
+        r) ref="$OPTARG";;
     esac
 done
 
-printf "Updating ComfyUI (${branch})...\n"
+[[ -n $ref ]] || { echo "Failed to get update target"; exit 1; }
+
+printf "Updating ComfyUI (${ref})...\n"
 
 cd /opt/ComfyUI
-git checkout ${branch}
+git fetch --tags
+git checkout ${ref}
 git pull
 
-"$COMFYUI_VENV_PIP" install --no-cache-dir \
-    -r requirements.txt
+"$COMFYUI_VENV_PIP" install --no-cache-dir -r requirements.txt

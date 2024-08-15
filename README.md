@@ -40,9 +40,9 @@ Supported Platforms: `NVIDIA CUDA`, `AMD ROCm`, `CPU`
 | ------------------------ | ----------- |
 | `AUTO_UPDATE`            | Update ComfyUI on startup (default `false`) |
 | `CIVITAI_TOKEN`          | Authenticate download requests from Civitai - Required for gated models |
-| `COMFYUI_BRANCH`         | ComfyUI branch/commit hash for auto update (default `master`) |
-| `COMFYUI_ARGS`           | Startup flags. eg. `--gpu-only --highvram` |
+| `COMFYUI_ARGS`           | Startup arguments. eg. `--gpu-only --highvram` |
 | `COMFYUI_PORT_HOST`      | ComfyUI interface port (default `8188`) |
+| `COMFYUI_REF`            | Git reference for auto update. Accepts branch, tag or commit hash. Default: latest release |
 | `COMFYUI_URL`            | Override `$DIRECT_ADDRESS:port` with URL for ComfyUI |
 | `HF_TOKEN`               | Authenticate download requests from HuggingFace - Required for gated models (SD3, FLUX, etc.) |
 

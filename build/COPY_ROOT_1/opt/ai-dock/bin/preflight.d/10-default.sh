@@ -4,12 +4,12 @@
 
 function preflight_main() {
     preflight_update_comfyui
-    printf "%s" "${COMFYUI_FLAGS}" > /etc/comfyui_flags.conf
+    printf "%s" "${COMFYUI_ARGS}" > /etc/comfyui_args.conf
 }
 
 function preflight_serverless() {
   printf "Skipping ComfyUI updates in serverless mode\n"
-  printf "%s" "${COMFYUI_FLAGS}" > /etc/comfyui_flags.conf
+  printf "%s" "${COMFYUI_ARGS}" > /etc/comfyui_args.conf
 }
 
 function preflight_update_comfyui() {

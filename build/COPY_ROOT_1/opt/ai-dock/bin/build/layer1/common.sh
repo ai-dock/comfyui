@@ -15,17 +15,17 @@ build_common_install_api() {
 }
 
 build_common_install_comfyui() {
-    # Set git SHA to latest if not provided
-    if [[ -z $COMFYUI_SHA ]]; then
-        export COMFYUI_SHA="$(curl -fsSL "https://api.github.com/repos/comfyanonymous/ComfyUI/commits/master" \
-        | jq -r '.sha[0:7]')"
-        env-store COMFYUI_SHA
+    # Set to latest release if not provided
+    if [[ -z $COMFYUI_BUILD_REF ]]; then
+        export COMFYUI_BUILD_REF="$(curl -s https://api.github.com/repos/comfyanonymous/ComfyUI/tags | \
+            jq -r '.[0].name')"
+        env-store COMFYUI_BUILD_REF
     fi
 
     cd /opt
     git clone https://github.com/comfyanonymous/ComfyUI
     cd /opt/ComfyUI
-    git checkout "$COMFYUI_SHA"
+    git checkout "$COMFYUI_BUILD_REF"
 
     $COMFYUI_VENV_PIP install --no-cache-dir \
         -r requirements.txt

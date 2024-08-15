@@ -38,12 +38,12 @@ function start() {
     
     printf "%s" "$file_content" > /run/http_ports/$PROXY_PORT
     
-    PLATFORM_FLAGS=""
+    PLATFORM_ARGS=""
     if [[ $XPU_TARGET = "CPU" ]]; then
-        PLATFORM_FLAGS="--cpu"
+        PLATFORM_ARGS="--cpu"
     fi
     
-    BASE_FLAGS="--disable-auto-launch"
+    BASE_ARGS="--disable-auto-launch"
     
     # Delay launch until venv is ready
     if [[ -f /run/workspace_sync || -f /run/container_config ]]; then
@@ -78,14 +78,14 @@ function start() {
     fuser -k -SIGKILL ${LISTEN_PORT}/tcp > /dev/null 2>&1 &
     wait -n
 
-    FLAGS_COMBINED="${PLATFORM_FLAGS} ${BASE_FLAGS} $(cat /etc/comfyui_flags.conf)"
+    ARGS_COMBINED="${PLATFORM_ARGS} ${BASE_ARGS} $(cat /etc/comfyui_args.conf)"
     printf "Starting %s...\n" "${SERVICE_NAME}"
 
     cd /opt/ComfyUI
     source "$COMFYUI_VENV/bin/activate"
     LD_PRELOAD=libtcmalloc.so \
         python main.py \
-        ${FLAGS_COMBINED} --port ${LISTEN_PORT}
+        ${ARGS_COMBINED} --port ${LISTEN_PORT}
 }
 
 start 2>&1
