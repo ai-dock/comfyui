@@ -16,9 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          # Undeclared SHA tags with latest commit from master branch
-          # Only building periodic sha tagged images
-          - {latest: "true", sha: "de17a97", python: "3.10", pytorch: "2.3.1"}
+          - {latest: "false", comfyui: "v0.0.8", python: "3.10", pytorch: "2.4.0"}
     steps:
       -
         name: Free Space
@@ -62,21 +60,21 @@ jobs:
         name: Set tags
         run: |
             img_path_ghcr="ghcr.io/${{ env.REPO_NAMESPACE }}/${{ env.REPO_NAME }}"
-            if [[ -z '${{ matrix.build.sha }}' ]]; then
-                COMFYUI_SHA="$(curl -fsSL "https://api.github.com/repos/comfyanonymous/ComfyUI/commits/master" | jq -r '.sha[0:7]')"
+            if [[ -z '${{ matrix.build.comfyui }}' ]]; then
+                COMFYUI_BUILD_REF="$(curl -s https://api.github.com/repos/comfyanonymous/ComfyUI/tags | jq -r '.[0].name')"
             else
-                COMFYUI_SHA="${{ matrix.build.sha }}"
+                COMFYUI_BUILD_REF="${{ matrix.build.comfyui }}"
             fi
-            [ -z "$COMFYUI_SHA" ] && { echo "Error: COMFYUI_SHA is empty. Exiting script." >&2; exit 1; }
-            echo "COMFYUI_SHA=${COMFYUI_SHA}" >> ${GITHUB_ENV}
+            [ -z "$COMFYUI_BUILD_REF" ] && { echo "Error: COMFYUI_BUILD_REF is empty. Exiting script." >&2; exit 1; }
+            echo "COMFYUI_BUILD_REF=${COMFYUI_BUILD_REF}" >> ${GITHUB_ENV}
 
             base_tag="v2-cpu-${{ env.UBUNTU_VERSION }}"
 
             if [[ ${{ matrix.build.latest }} == "true" ]]; then
                 echo "Marking latest"
-                TAGS="${img_path_ghcr}:${base_tag}-${COMFYUI_SHA}, ${img_path_ghcr}:${base_tag}, ${img_path_ghcr}:latest-cpu"
+                TAGS="${img_path_ghcr}:${base_tag}-${COMFYUI_BUILD_REF}, ${img_path_ghcr}:${base_tag}, ${img_path_ghcr}:latest-cpu"
             else
-                TAGS="${img_path_ghcr}:${base_tag}-${COMFYUI_SHA}"
+                TAGS="${img_path_ghcr}:${base_tag}-${COMFYUI_BUILD_REF}"
             fi
             echo "TAGS=${TAGS}" >> ${GITHUB_ENV}
       -
@@ -88,7 +86,7 @@ jobs:
             IMAGE_BASE=ghcr.io/ai-dock/python:${{ matrix.build.python }}-v2-cpu-${{ env.UBUNTU_VERSION }}
             PYTHON_VERSION=${{ matrix.build.python }}
             PYTORCH_VERSION=${{ matrix.build.pytorch }}
-            COMFYUI_SHA=${{ env.COMFYUI_SHA }}
+            COMFYUI_BUILD_REF=${{ env.COMFYUI_BUILD_REF }}
           push: true
           # Avoids unknown/unknown architecture and extra metadata
           provenance: false
@@ -100,9 +98,7 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          # Undeclared SHA tags with latest commit from master branch
-          # Only building periodic sha tagged images
-          - {latest: "true", sha: "de17a97", python: "3.10", pytorch: "2.3.1", cuda: "12.1.1-base"}
+          - {latest: "false", comfyui: "v0.0.8", python: "3.10", pytorch: "2.3.1", cuda: "12.1.1-base"}
     steps:
       -
         name: Free Space
@@ -147,24 +143,24 @@ jobs:
         run: |
           img_path_ghcr="ghcr.io/${{ env.REPO_NAMESPACE }}/${{ env.REPO_NAME }}"
           img_path_dhub="${{ vars.DOCKERHUB_USER }}/${{ env.REPO_NAME }}-cuda"
-          if [[ -z '${{ matrix.build.sha }}' ]]; then
-              COMFYUI_SHA="$(curl -fsSL "https://api.github.com/repos/comfyanonymous/ComfyUI/commits/master" | jq -r '.sha[0:7]')"
+          if [[ -z '${{ matrix.build.comfyui }}' ]]; then
+              COMFYUI_BUILD_REF="$(curl -s https://api.github.com/repos/comfyanonymous/ComfyUI/tags | jq -r '.[0].name')"
           else
-              COMFYUI_SHA="${{ matrix.build.sha }}"
+              COMFYUI_BUILD_REF="${{ matrix.build.comfyui }}"
           fi
-          [ -z "$COMFYUI_SHA" ] && { echo "Error: COMFYUI_SHA is empty. Exiting script." >&2; exit 1; }
-          echo "COMFYUI_SHA=${COMFYUI_SHA}" >> ${GITHUB_ENV}
+          [ -z "$COMFYUI_BUILD_REF" ] && { echo "Error: COMFYUI_BUILD_REF is empty. Exiting script." >&2; exit 1; }
+          echo "COMFYUI_BUILD_REF=${COMFYUI_BUILD_REF}" >> ${GITHUB_ENV}
 
           base_tag="v2-cuda-${{ matrix.build.cuda }}-${{ env.UBUNTU_VERSION }}"
 
           if [[ ${{ matrix.build.latest }} == "true" ]]; then
                 echo "Marking latest"
                 # GHCR.io Tags
-                TAGS="${img_path_ghcr}:${base_tag}-${COMFYUI_SHA}, ${img_path_ghcr}:${base_tag}, ${img_path_ghcr}:latest, ${img_path_ghcr}:latest-cuda"
+                TAGS="${img_path_ghcr}:${base_tag}-${COMFYUI_BUILD_REF}, ${img_path_ghcr}:${base_tag}, ${img_path_ghcr}:latest, ${img_path_ghcr}:latest-cuda"
                 # Docker.io Tags
-                TAGS="${TAGS}, ${img_path_dhub}:${COMFYUI_SHA}, ${img_path_dhub}:latest"
+                TAGS="${TAGS}, ${img_path_dhub}:${COMFYUI_BUILD_REF}, ${img_path_dhub}:latest"
             else
-                TAGS="${img_path_ghcr}:${base_tag}-${COMFYUI_SHA}, ${img_path_dhub}:${COMFYUI_SHA}"
+                TAGS="${img_path_ghcr}:${base_tag}-${COMFYUI_BUILD_REF}, ${img_path_dhub}:${COMFYUI_BUILD_REF}"
             fi
           echo "TAGS=${TAGS}" >> ${GITHUB_ENV}
       -
@@ -176,7 +172,7 @@ jobs:
             IMAGE_BASE=ghcr.io/ai-dock/python:${{ matrix.build.python }}-v2-cuda-${{ matrix.build.cuda }}-${{ env.UBUNTU_VERSION }}
             PYTHON_VERSION=${{ matrix.build.python }}
             PYTORCH_VERSION=${{ matrix.build.pytorch }}
-            COMFYUI_SHA=${{ env.COMFYUI_SHA }}
+            COMFYUI_BUILD_REF=${{ env.COMFYUI_BUILD_REF }}
           push: true
           provenance: false
           tags: ${{ env.TAGS }}
@@ -187,9 +183,7 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          # Undeclared SHA tags with latest commit from master branch
-          # Only building periodic sha tagged images
-          - {latest: "true", sha: "de17a97", python: "3.10", pytorch: "2.3.1", rocm: "6.0-runtime"}
+          - {latest: "false", comfyui: "v0.0.8", python: "3.10", pytorch: "2.3.1", rocm: "6.0-runtime"}
     steps:
       -
         name: Free Space
@@ -234,24 +228,24 @@ jobs:
         run: |
             img_path_ghcr="ghcr.io/${{ env.REPO_NAMESPACE }}/${{ env.REPO_NAME }}"
             img_path_dhub="${{ vars.DOCKERHUB_USER }}/${{ env.REPO_NAME }}-rocm"
-            if [[ -z '${{ matrix.build.sha }}' ]]; then
-                COMFYUI_SHA="$(curl -fsSL "https://api.github.com/repos/comfyanonymous/ComfyUI/commits/master" | jq -r '.sha[0:7]')"
+            if [[ -z '${{ matrix.build.comfyui }}' ]]; then
+                COMFYUI_BUILD_REF="$(curl -s https://api.github.com/repos/comfyanonymous/ComfyUI/tags | jq -r '.[0].name')"
             else
-                COMFYUI_SHA="${{ matrix.build.sha }}"
+                COMFYUI_BUILD_REF="${{ matrix.build.comfyui }}"
             fi
-            [ -z "$COMFYUI_SHA" ] && { echo "Error: COMFYUI_SHA is empty. Exiting script." >&2; exit 1; }
-            echo "COMFYUI_SHA=${COMFYUI_SHA}" >> ${GITHUB_ENV}
+            [ -z "$COMFYUI_BUILD_REF" ] && { echo "Error: COMFYUI_BUILD_REF is empty. Exiting script." >&2; exit 1; }
+            echo "COMFYUI_BUILD_REF=${COMFYUI_BUILD_REF}" >> ${GITHUB_ENV}
 
             base_tag="v2-rocm-${{ matrix.build.rocm }}-${{ env.UBUNTU_VERSION }}"
 
             if [[ ${{ matrix.build.latest }} == "true" ]]; then
                 echo "Marking latest"
                 # GHCR.io Tags
-                TAGS="${img_path_ghcr}:${base_tag}-${COMFYUI_SHA}, ${img_path_ghcr}:${base_tag}, ${img_path_ghcr}:latest-rocm"
+                TAGS="${img_path_ghcr}:${base_tag}-${COMFYUI_BUILD_REF}, ${img_path_ghcr}:${base_tag}, ${img_path_ghcr}:latest-rocm"
                 # Docker.io Tags
-                TAGS="${TAGS}, ${img_path_dhub}:${COMFYUI_SHA}, ${img_path_dhub}:latest"
+                TAGS="${TAGS}, ${img_path_dhub}:${COMFYUI_BUILD_REF}, ${img_path_dhub}:latest"
             else
-                TAGS="${img_path_ghcr}:${base_tag}-${COMFYUI_SHA}, ${img_path_dhub}:${COMFYUI_SHA}"
+                TAGS="${img_path_ghcr}:${base_tag}-${COMFYUI_BUILD_REF}, ${img_path_dhub}:${COMFYUI_BUILD_REF}"
             fi
             echo "TAGS=${TAGS}" >> ${GITHUB_ENV}
       -
@@ -263,7 +257,7 @@ jobs:
             IMAGE_BASE=ghcr.io/ai-dock/python:${{ matrix.build.python }}-v2-rocm-${{ matrix.build.rocm }}-${{ env.UBUNTU_VERSION }}
             PYTHON_VERSION=${{ matrix.build.python }}
             PYTORCH_VERSION=${{ matrix.build.pytorch }}
-            COMFYUI_SHA=${{ env.COMFYUI_SHA }}
+            COMFYUI_BUILD_REF=${{ env.COMFYUI_BUILD_REF }}
           push: true
           provenance: false
           tags: ${{ env.TAGS }}
