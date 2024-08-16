@@ -155,7 +155,7 @@ class PostprocessWorker:
             **gcp_config["credentials"],
         )
         google_credentials = service_account.Credentials.from_service_account_info(
-            **gcp_config["credentials"])
+            gcp_config["credentials"])
         aiog_client = aiogoogle.client.Aiogoogle(service_account_creds=creds)
         async with aiog_client:
             # Not needed as we are using provided service account creds. Uncomment if using discovery.
