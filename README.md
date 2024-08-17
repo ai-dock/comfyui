@@ -5,7 +5,8 @@
 Run [ComfyUI](https://github.com/comfyanonymous/ComfyUI) in a highly-configurable, cloud-first AI-Dock container.
 
 >[!NOTE]
->These images do not bundle models or third-party configurations. You should use a [provisioning script](https://github.com/ai-dock/base-image/wiki/4.0-Running-the-Image#provisioning-script) to automatically configure your container. You can find examples in `config/provisioning`.
+>These images do not bundle models or third-party configurations. You should use a [provisioning script](https://github.com/ai-dock/base-image/wiki/4.0-Running-the-Image#provisioning-script) to automatically configure your container. You can find examples, including `SD3` & `FLUX.1` setup, in `config/provisioning`.
+
 
 ## Documentation
 
@@ -30,7 +31,6 @@ Tags follow these patterns:
 
 
 Browse [ghcr.io](https://github.com/ai-dock/comfyui/pkgs/container/comfyui) for an image suitable for your target environment. Alternatively, view a select range of [CUDA](https://hub.docker.com/r/aidockorg/comfyui-cuda) and [ROCm](https://hub.docker.com/r/aidockorg/comfyui-rocm) builds at DockerHub.
-
 
 Supported Platforms: `NVIDIA CUDA`, `AMD ROCm`, `CPU`
 
@@ -87,6 +87,8 @@ You can access the api directly at `/ai-dock/api/` or you can use the Swager/ope
 **Vast.​ai**
 
 - [comfyui:latest-cuda](https://link.ai-dock.org/template-vast-comfyui)
+
+- [comfyui:latest-cuda + FLUX.1](https://link.ai-dock.org/template-vast-comfyui-flux)
 
 - [comfyui:latest-rocm](https://link.ai-dock.org/template-vast-comfyui-rocm)
 
