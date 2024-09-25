@@ -7,7 +7,7 @@ services:
       context: ./build
       args:
         PYTHON_VERSION: ${PYTHON_VERSION:-3.10}
-        PYTORCH_VERSION: ${PYTORCH_VERSION:-2.3.0}
+        PYTORCH_VERSION: ${PYTORCH_VERSION:-2.4.1}
         COMFYUI_BUILD_REF: ${COMFYUI_BUILD_REF:-}
         # Base on Python image which is base + python + jupyter
         IMAGE_BASE: ${IMAGE_BASE:-ghcr.io/ai-dock/python:${PYTHON_VERSION:-3.10}-v2-cuda-12.1.1-base-22.04}
