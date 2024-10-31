@@ -5,3 +5,5 @@ config/authorized_keys
 config/rclone
 tpdocs/
 .env
+.venv
+

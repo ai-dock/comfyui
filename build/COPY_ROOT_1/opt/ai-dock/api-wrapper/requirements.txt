@@ -2,8 +2,11 @@ aiocache
 pydantic>=2
 aiobotocore
 aiofiles
+aiogoogle
 aiohttp
 fastapi==0.103
+google-auth
+google-cloud-storage
 pathlib
 python-magic
 uvicorn==0.23
