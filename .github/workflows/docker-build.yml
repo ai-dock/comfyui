@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - {latest: "false", comfyui: "v0.2.6", python: "3.10", pytorch: "2.4.1"}
+          - {latest: "false", comfyui: "v0.2.7", python: "3.10", pytorch: "2.5.1"}
     steps:
       -
         name: Free Space
@@ -98,7 +98,8 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - {latest: "false", comfyui: "v0.2.6", python: "3.10", pytorch: "2.4.1", cuda: "12.1.1-base"}
+          - {latest: "false", comfyui: "v0.2.7", python: "3.10", pytorch: "2.5.1", cuda: "12.1.1-base"}
+          - {latest: "false", comfyui: "v0.2.7", python: "3.10", pytorch: "2.5.1", cuda: "12.1.1-cudnn8-devel"}
     steps:
       -
         name: Free Space
@@ -162,6 +163,10 @@ jobs:
             else
                 TAGS="${img_path_ghcr}:${base_tag}-${COMFYUI_BUILD_REF}, ${img_path_dhub}:${COMFYUI_BUILD_REF}"
             fi
+            # Tag a devel build
+            if [[ ${{ matrix.build.cuda }} = *-devel ]]; then
+                TAGS="${TAGS}, ${img_path_dhub}:${COMFYUI_BUILD_REF}-devel"
+            fi
           echo "TAGS=${TAGS}" >> ${GITHUB_ENV}
       -
         name: Build and push
@@ -183,7 +188,7 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - {latest: "false", comfyui: "v0.2.6", python: "3.10", pytorch: "2.3.1", rocm: "6.0-runtime"}
+          - {latest: "false", comfyui: "v0.2.7", python: "3.10", pytorch: "2.3.1", rocm: "6.0-runtime"}
     steps:
       -
         name: Free Space
