@@ -59,6 +59,8 @@ class PostprocessWorker:
             for inner_key, inner_value in value.items():
                 if isinstance(inner_value, list):
                     for item in inner_value:
+                        if not isinstance(item, dict):
+                            continue
                         if item.get("type") == "output":
                             original_path = f"{config.OUTPUT_DIR}{item['subfolder']}/{item['filename']}"
                             new_path = f"{custom_output_dir}/{item['filename']}"
